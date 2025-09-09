@@ -3,9 +3,12 @@ const app = express();
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 require('dotenv').config();
+const routes = require('./src/routes');
 
 app.use(express.json());
 app.use(cookieParser());
+
+app.use(routes);
 
 mongoose.connect(process.env.MONGODB_URL).then(() => {
     console.log('mongodb connected')
