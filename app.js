@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
+const classifer = require('./src/train/categoryClassifier');
 require('dotenv').config();
 const routes = require('./src/routes');
 
@@ -10,15 +11,21 @@ app.use(cookieParser());
 
 app.use(routes);
 
-mongoose.connect(process.env.MONGODB_URL).then(() => {
-    console.log('mongodb connected')
-})
+async function startServer() {
+    try {
+        await mongoose.connect(process.env.MONGODB_URL)
+        console.log('Connected to MongoDB');
 
-app.get('/', (req, res) => {
-    res.send('Hello world')
-});
+        await classifer.trainModel('./src/train/data/finance_training_data_1000.csv');
+        console.log('Model trained successfully');
 
-app.listen(process.env.PORT, () => {
-    console.log(`Server is running on http://localhost:${process.env.PORT}`);
-});
+        app.listen(process.env.PORT, () => {
+            console.log(`Server is running on http://localhost:${process.env.PORT}`);
+        });
+    } catch (error) {
+        console.log('Error starting server:', error);
+        process.exit(1);
+    }
+}
 
+startServer();

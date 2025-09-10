@@ -1,0 +1,1001 @@
+text,label
+buy pizza,Food
+makan nasi goreng,Food
+order burger online,Food
+cooking instant noodles,Food
+grab food delivery,Food
+eat sushi with friends,Food
+beli mie ayam,Food
+lunch with fried chicken,Food
+buy snacks at minimarket,Food
+dinner with steak,Food
+beli kopi di cafe,Food
+grocery shopping vegetables,Food
+order bubble tea,Food
+makan sate ayam,Food
+breakfast sandwich,Food
+beli bakso,Food
+cooking spaghetti,Food
+buy bread at bakery,Food
+pesan ayam geprek,Food
+grab lunch box,Food
+drink juice,Food
+beli martabak,Food
+eating salad,Food
+pesan minuman boba,Food
+makan mie goreng,Food
+book grab ride,Transport
+naik gojek,Transport
+take the bus,Transport
+beli tiket kereta,Transport
+ride train to work,Transport
+pesan ojek online,Transport
+call taxi,Transport
+fuel for motorcycle,Transport
+isi bensin mobil,Transport
+airport shuttle booking,Transport
+bayar tol,Transport
+bike rental,Transport
+naik angkot,Transport
+car maintenance,Transport
+parkir mobil,Transport
+sewa motor harian,Transport
+busway ticket,Transport
+naik kapal ferry,Transport
+monthly train pass,Transport
+grabcar payment,Transport
+buy movie ticket,Entertainment
+nonton bioskop,Entertainment
+subscribe netflix,Entertainment
+beli voucher game,Entertainment
+watch concert,Entertainment
+karaoke with friends,Entertainment
+streaming spotify,Entertainment
+nonton film online,Entertainment
+play video games,Entertainment
+beli tiket konser,Entertainment
+theme park entry,Entertainment
+pergi ke mall,Entertainment
+book cinema seat,Entertainment
+beli komik,Entertainment
+football match ticket,Entertainment
+watch theater show,Entertainment
+party expenses,Entertainment
+beli kaset musik,Entertainment
+cinema popcorn,Entertainment
+rent playstation,Entertainment
+bayar listrik PLN,Utilities
+pay water bill,Utilities
+internet monthly fee,Utilities
+bayar wifi indihome,Utilities
+purchase phone credit,Utilities
+beli pulsa,Utilities
+electricity payment,Utilities
+bayar tagihan PAM,Utilities
+buy data package,Utilities
+gas cylinder refill,Utilities
+bayar PDAM bulanan,Utilities
+monthly cable TV,Utilities
+beli token listrik,Utilities
+air conditioner service,Utilities
+bayar tv kabel,Utilities
+phone postpaid bill,Utilities
+bayar internet biznet,Utilities
+recharge prepaid electricity,Utilities
+service listrik rumah,Utilities
+water refill gallon,Utilities
+buy medicine,Health
+beli obat flu,Health
+doctor consultation,Health
+check up klinik,Health
+bayar rumah sakit,Health
+health insurance payment,Health
+beli vitamin,Health
+dentist appointment,Health
+beli masker,Health
+buy supplements,Health
+pharmacy purchase,Health
+tes darah,Health
+gym membership,Health
+beli obat sakit kepala,Health
+fisioterapi,Health
+eye check up,Health
+hospital fee,Health
+mental health therapy,Health
+vaksinasi flu,Health
+beli obat batuk,Health
+monthly house rent,Rent
+bayar kos bulanan,Rent
+apartment rental fee,Rent
+kontrakan payment,Rent
+sewa rumah tahunan,Rent
+office rent,Rent
+bayar kontrakan,Rent
+kost monthly fee,Rent
+bayar apartemen,Rent
+room rental,Rent
+warehouse rent,Rent
+bayar kosan,Rent
+villa rental,Rent
+bayar rumah kontrakan,Rent
+store rental,Rent
+flat rent fee,Rent
+bayar boarding house,Rent
+office space lease,Rent
+bayar kontrakan rumah,Rent
+land rental,Rent
+beli hadiah ulang tahun,Other
+shopping clothes,Other
+buy new shoes,Other
+beli tas baru,Other
+pay school tuition,Other
+bayar uang kuliah,Other
+buy laptop,Other
+beli hp baru,Other
+gift for friend,Other
+beli parfum,Other
+buy books,Other
+beli alat tulis,Other
+charity donation,Other
+sumbangan masjid,Other
+wedding gift,Other
+beli jam tangan,Other
+house renovation,Other
+perbaikan atap rumah,Other
+buy furniture,Other
+beli kursi meja,Other
+donate to orphanage,Other
+bayar pajak motor,Other
+beli mainan anak,Other
+festival donation,Other
+bayar biaya pernikahan,Other
+naik kapal ferry quickly,Transport
+breakfast sandwich quickly,Food
+need to car maintenance,Transport
+need to bayar kosan,Rent
+pesan ayam geprek quickly,Food
+makan sate ayam!,Food
+buy data package today,Utilities
+beli obat batuk,Health
+beli obat batuk asap,Health
+need to buy bread at bakery,Food
+bayar wifi indihome!,Utilities
+phone postpaid bill,Utilities
+gift for friend,Other
+pesan minuman boba asap,Food
+donate to orphanage asap,Other
+beli kopi di cafe,Food
+pay school tuition now,Other
+water refill gallon please,Utilities
+busway ticket today,Transport
+pesan minuman boba today,Food
+villa rental please,Rent
+naik gojek quickly,Transport
+doctor consultation,Health
+need to nonton film online,Entertainment
+buy furniture,Other
+need to take the bus,Transport
+beli kopi di cafe!,Food
+bike rental please,Transport
+bayar listrik PLN!,Utilities
+book grab ride quickly,Transport
+beli token listrik now,Utilities
+breakfast sandwich quickly,Food
+buy bread at bakery please,Food
+theme park entry now,Entertainment
+beli jam tangan quickly,Other
+bayar tagihan PAM today,Utilities
+pay school tuition please,Other
+beli martabak now,Food
+beli obat sakit kepala asap,Health
+office space lease,Rent
+beli tas baru!,Other
+makan sate ayam today,Food
+need to theme park entry,Entertainment
+beli vitamin,Health
+dentist appointment please,Health
+beli alat tulis,Other
+need to beli pulsa,Utilities
+call taxi!,Transport
+need to land rental,Rent
+mental health therapy please,Health
+tes darah please,Health
+bayar tol quickly,Transport
+buy pizza now,Food
+book cinema seat asap,Entertainment
+need to buy laptop,Other
+beli kaset musik,Entertainment
+need to beli hp baru,Other
+doctor consultation!,Health
+eating salad quickly,Food
+service listrik rumah please,Utilities
+bayar tagihan PAM today,Utilities
+monthly train pass,Transport
+beli masker now,Health
+need to cooking instant noodles,Food
+beli obat batuk,Health
+party expenses!,Entertainment
+monthly cable TV quickly,Utilities
+book grab ride now,Transport
+buy pizza now,Food
+tes darah please,Health
+bayar rumah kontrakan asap,Rent
+sumbangan masjid now,Other
+apartment rental fee,Rent
+fuel for motorcycle!,Transport
+beli kursi meja now,Other
+beli parfum please,Other
+pay school tuition asap,Other
+buy laptop please,Other
+book cinema seat please,Entertainment
+festival donation today,Other
+wedding gift now,Other
+bayar pajak motor,Other
+eye check up quickly,Health
+nonton bioskop asap,Entertainment
+isi bensin mobil,Transport
+health insurance payment today,Health
+makan sate ayam,Food
+car maintenance now,Transport
+pesan ayam geprek,Food
+need to beli komik,Entertainment
+kost monthly fee today,Rent
+hospital fee,Health
+need to beli parfum,Other
+rent playstation today,Entertainment
+cooking instant noodles please,Food
+check up klinik,Health
+beli voucher game please,Entertainment
+play video games!,Entertainment
+grab food delivery quickly,Food
+cinema popcorn,Entertainment
+naik gojek today,Transport
+buy books now,Other
+eat sushi with friends now,Food
+internet monthly fee now,Utilities
+health insurance payment,Health
+beli mainan anak now,Other
+tes darah asap,Health
+fuel for motorcycle please,Transport
+need to sewa motor harian,Transport
+beli masker please,Health
+charity donation now,Other
+grocery shopping vegetables now,Food
+warehouse rent quickly,Rent
+nonton film online,Entertainment
+recharge prepaid electricity quickly,Utilities
+phone postpaid bill quickly,Utilities
+beli kopi di cafe please,Food
+pesan ojek online!,Transport
+need to watch theater show,Entertainment
+party expenses now,Entertainment
+cooking spaghetti,Food
+pesan ojek online,Transport
+need to air conditioner service,Utilities
+store rental,Rent
+bayar tagihan PAM asap,Utilities
+hospital fee asap,Health
+grab lunch box!,Food
+donate to orphanage today,Other
+gym membership please,Health
+need to beli voucher game,Entertainment
+grocery shopping vegetables now,Food
+service listrik rumah today,Utilities
+bayar apartemen please,Rent
+fisioterapi now,Health
+doctor consultation today,Health
+bayar kosan,Rent
+lunch with fried chicken please,Food
+pesan ayam geprek now,Food
+cinema popcorn asap,Entertainment
+beli parfum quickly,Other
+beli komik now,Entertainment
+purchase phone credit today,Utilities
+need to dentist appointment,Health
+gas cylinder refill please,Utilities
+beli parfum,Other
+beli jam tangan please,Other
+gym membership,Health
+beli komik today,Entertainment
+cooking instant noodles asap,Food
+order bubble tea asap,Food
+watch theater show,Entertainment
+beli martabak,Food
+warehouse rent please,Rent
+charity donation today,Other
+buy bread at bakery please,Food
+gym membership now,Health
+beli bakso asap,Food
+pesan ojek online!,Transport
+grocery shopping vegetables,Food
+gift for friend!,Other
+office space lease!,Rent
+pesan ojek online asap,Transport
+beli jam tangan asap,Other
+need to beli parfum,Other
+buy pizza please,Food
+bayar apartemen please,Rent
+watch theater show now,Entertainment
+warehouse rent quickly,Rent
+beli bakso!,Food
+bike rental please,Transport
+buy supplements now,Health
+buy supplements quickly,Health
+beli bakso today,Food
+bayar listrik PLN!,Utilities
+beli komik please,Entertainment
+beli jam tangan quickly,Other
+wedding gift today,Other
+pharmacy purchase!,Health
+office space lease,Rent
+call taxi quickly,Transport
+book grab ride today,Transport
+naik gojek now,Transport
+beli token listrik!,Utilities
+gym membership now,Health
+internet monthly fee,Utilities
+villa rental asap,Rent
+need to call taxi,Transport
+book cinema seat quickly,Entertainment
+beli tiket kereta,Transport
+kost monthly fee asap,Rent
+need to bayar rumah sakit,Health
+beli masker quickly,Health
+beli jam tangan today,Other
+monthly cable tv,Utilities
+gift for friend today,Other
+need to car maintenance,Transport
+beli tiket kereta now,Transport
+need to warehouse rent,Rent
+pergi ke mall please,Entertainment
+beli kopi di cafe quickly,Food
+sewa motor harian now,Transport
+beli kaset musik,Entertainment
+need to charity donation,Other
+beli token listrik,Utilities
+bayar uang kuliah asap,Other
+vaksinasi flu,Health
+party expenses,Entertainment
+pesan ayam geprek now,Food
+grocery shopping vegetables now,Food
+ride train to work now,Transport
+kost monthly fee,Rent
+bayar kosan,Rent
+beli kaset musik today,Entertainment
+take the bus!,Transport
+beli obat batuk please,Health
+monthly house rent now,Rent
+party expenses,Entertainment
+need to bayar kontrakan rumah,Rent
+beli alat tulis quickly,Other
+tes darah quickly,Health
+beli tiket konser asap,Entertainment
+sewa motor harian!,Transport
+beli mie ayam quickly,Food
+gift for friend asap,Other
+sumbangan masjid,Other
+bayar biaya pernikahan now,Other
+need to sumbangan masjid,Other
+bayar biaya pernikahan,Other
+beli hp baru quickly,Other
+book grab ride asap,Transport
+buy snacks at minimarket asap,Food
+eye check up today,Health
+bayar tagihan PAM now,Utilities
+bayar kos bulanan,Rent
+office space lease!,Rent
+watch concert please,Entertainment
+isi bensin mobil,Transport
+play video games asap,Entertainment
+beli komik today,Entertainment
+need to beli hadiah ulang tahun,Other
+play video games asap,Entertainment
+beli vitamin!,Health
+beli vitamin today,Health
+recharge prepaid electricity please,Utilities
+lunch with fried chicken please,Food
+beli kopi di cafe quickly,Food
+need to parkir mobil,Transport
+bayar kontrakan asap,Rent
+need to call taxi,Transport
+book grab ride,Transport
+bayar tagihan PAM asap,Utilities
+sewa rumah tahunan today,Rent
+gym membership,Health
+need to streaming spotify,Entertainment
+need to call taxi,Transport
+makan sate ayam!,Food
+fuel for motorcycle now,Transport
+beli obat sakit kepala!,Health
+order bubble tea please,Food
+sumbangan masjid please,Other
+drink juice quickly,Food
+pesan ayam geprek,Food
+book cinema seat please,Entertainment
+grab food delivery asap,Food
+eye check up,Health
+naik gojek asap,Transport
+need to wedding gift,Other
+dinner with steak please,Food
+streaming spotify,Entertainment
+beli pulsa now,Utilities
+naik kapal ferry quickly,Transport
+purchase phone credit,Utilities
+bayar tagihan PAM quickly,Utilities
+bayar tagihan PAM please,Utilities
+order burger online today,Food
+land rental,Rent
+bayar rumah sakit quickly,Health
+beli hadiah ulang tahun asap,Other
+watch theater show,Entertainment
+need to sewa rumah tahunan,Rent
+need to office rent,Rent
+party expenses today,Entertainment
+doctor consultation please,Health
+beli tiket kereta asap,Transport
+beli parfum quickly,Other
+office rent now,Rent
+fuel for motorcycle asap,Transport
+monthly cable TV today,Utilities
+beli komik today,Entertainment
+car maintenance quickly,Transport
+bayar PDAM bulanan asap,Utilities
+pharmacy purchase,Health
+office space lease today,Rent
+rent playstation please,Entertainment
+need to cooking spaghetti,Food
+beli parfum please,Other
+beli tiket kereta please,Transport
+bayar kontrakan rumah,Rent
+beli tiket kereta asap,Transport
+buy movie ticket!,Entertainment
+grabcar payment asap,Transport
+naik kapal ferry,Transport
+charity donation please,Other
+need to pharmacy purchase,Health
+fisioterapi,Health
+gas cylinder refill asap,Utilities
+charity donation quickly,Other
+donate to orphanage!,Other
+buy medicine quickly,Health
+need to gas cylinder refill,Utilities
+electricity payment!,Utilities
+sumbangan masjid please,Other
+pergi ke mall quickly,Entertainment
+isi bensin mobil,Transport
+bayar tv kabel!,Utilities
+naik kapal ferry,Transport
+beli pulsa asap,Utilities
+car maintenance now,Transport
+villa rental please,Rent
+buy supplements,Health
+kost monthly fee quickly,Rent
+bayar listrik PLN,Utilities
+beli obat flu today,Health
+streaming spotify please,Entertainment
+bayar kontrakan,Rent
+breakfast sandwich,Food
+bayar kosan asap,Rent
+need to beli tiket konser,Entertainment
+dinner with steak,Food
+need to busway ticket,Transport
+bayar rumah sakit today,Health
+need to isi bensin mobil,Transport
+hospital fee today,Health
+buy movie ticket asap,Entertainment
+busway ticket,Transport
+buy supplements,Health
+need to busway ticket,Transport
+pay school tuition today,Other
+kontrakan payment,Rent
+need to doctor consultation,Health
+house renovation,Other
+bayar internet biznet!,Utilities
+bayar internet biznet!,Utilities
+naik angkot today,Transport
+hospital fee!,Health
+beli parfum,Other
+warehouse rent today,Rent
+bayar tol asap,Transport
+grocery shopping vegetables asap,Food
+beli tiket konser,Entertainment
+house renovation,Other
+need to beli hadiah ulang tahun,Other
+beli masker please,Health
+ride train to work,Transport
+karaoke with friends today,Entertainment
+beli parfum today,Other
+beli parfum!,Other
+internet monthly fee asap,Utilities
+take the bus!,Transport
+bike rental today,Transport
+bike rental,Transport
+naik angkot!,Transport
+beli bakso,Food
+pharmacy purchase,Health
+makan sate ayam,Food
+beli masker quickly,Health
+grocery shopping vegetables,Food
+buy books now,Other
+drink juice asap,Food
+bayar PDAM bulanan quickly,Utilities
+office space lease!,Rent
+fisioterapi quickly,Health
+flat rent fee,Rent
+beli bakso!,Food
+pesan minuman boba!,Food
+pesan minuman boba,Food
+sumbangan masjid please,Other
+airport shuttle booking!,Transport
+parkir mobil!,Transport
+bayar kosan,Rent
+car maintenance,Transport
+grab food delivery,Food
+lunch with fried chicken!,Food
+eye check up,Health
+bayar rumah sakit,Health
+rent playstation today,Entertainment
+hospital fee today,Health
+bayar pajak motor,Other
+hospital fee!,Health
+fuel for motorcycle,Transport
+nonton film online,Entertainment
+pay water bill today,Utilities
+party expenses asap,Entertainment
+naik kapal ferry,Transport
+flat rent fee quickly,Rent
+kost monthly fee today,Rent
+bayar uang kuliah quickly,Other
+grab lunch box now,Food
+water refill gallon,Utilities
+need to bayar rumah kontrakan,Rent
+need to check up klinik,Health
+pesan ayam geprek please,Food
+drink juice,Food
+tes darah please,Health
+buy pizza quickly,Food
+need to beli obat flu,Health
+buy pizza please,Food
+need to bayar apartemen,Rent
+fisioterapi now,Health
+bayar kontrakan now,Rent
+beli hadiah ulang tahun now,Other
+beli mainan anak!,Other
+need to pergi ke mall,Entertainment
+beli mainan anak!,Other
+pay water bill today,Utilities
+bayar kontrakan,Rent
+airport shuttle booking quickly,Transport
+need to bayar tagihan PAM,Utilities
+grab food delivery now,Food
+cinema popcorn,Entertainment
+pay school tuition,Other
+air conditioner service!,Utilities
+phone postpaid bill quickly,Utilities
+need to pharmacy purchase,Health
+apartment rental fee asap,Rent
+need to grabcar payment,Transport
+parkir mobil!,Transport
+dentist appointment,Health
+bayar tagihan PAM!,Utilities
+bayar PDAM bulanan!,Utilities
+need to kontrakan payment,Rent
+air conditioner service today,Utilities
+store rental please,Rent
+gift for friend,Other
+bayar uang kuliah please,Other
+beli hp baru!,Other
+beli parfum today,Other
+monthly train pass!,Transport
+buy snacks at minimarket today,Food
+warehouse rent,Rent
+need to charity donation,Other
+need to watch theater show,Entertainment
+beli hp baru today,Other
+beli hadiah ulang tahun!,Other
+charity donation now,Other
+order bubble tea,Food
+ride train to work!,Transport
+buy movie ticket!,Entertainment
+bayar listrik PLN now,Utilities
+beli martabak today,Food
+need to mental health therapy,Health
+naik kapal ferry asap,Transport
+pay school tuition!,Other
+beli kopi di cafe asap,Food
+gas cylinder refill,Utilities
+bike rental asap,Transport
+tes darah asap,Health
+cinema popcorn now,Entertainment
+party expenses,Entertainment
+donate to orphanage please,Other
+buy data package quickly,Utilities
+need to beli obat sakit kepala,Health
+buy supplements today,Health
+nonton film online quickly,Entertainment
+monthly train pass,Transport
+electricity payment,Utilities
+order bubble tea now,Food
+need to naik kapal ferry,Transport
+tes darah asap,Health
+beli komik now,Entertainment
+party expenses quickly,Entertainment
+nonton film online now,Entertainment
+theme park entry,Entertainment
+lunch with fried chicken asap,Food
+grocery shopping vegetables,Food
+lunch with fried chicken,Food
+buy snacks at minimarket quickly,Food
+beli martabak now,Food
+office rent now,Rent
+office rent,Rent
+tes darah asap,Health
+subscribe netflix please,Entertainment
+makan nasi goreng today,Food
+gas cylinder refill now,Utilities
+need to purchase phone credit,Utilities
+bayar biaya pernikahan now,Other
+beli mie ayam,Food
+book grab ride asap,Transport
+busway ticket asap,Transport
+beli vitamin asap,Health
+gas cylinder refill now,Utilities
+need to parkir mobil,Transport
+sewa motor harian today,Transport
+vaksinasi flu!,Health
+theme park entry now,Entertainment
+need to dentist appointment,Health
+bayar kontrakan quickly,Rent
+order bubble tea now,Food
+bayar kosan today,Rent
+bayar kontrakan rumah please,Rent
+need to beli martabak,Food
+rent playstation asap,Entertainment
+need to nonton film online,Entertainment
+need to pay school tuition,Other
+play video games,Entertainment
+wedding gift!,Other
+pergi ke mall asap,Entertainment
+need to bayar kontrakan,Rent
+gym membership,Health
+need to gas cylinder refill,Utilities
+bayar boarding house,Rent
+beli martabak,Food
+water refill gallon now,Utilities
+grocery shopping vegetables please,Food
+bayar kosan!,Rent
+drink juice quickly,Food
+pergi ke mall please,Entertainment
+buy medicine!,Health
+cooking instant noodles asap,Food
+order bubble tea,Food
+check up klinik,Health
+kontrakan payment,Rent
+check up klinik quickly,Health
+bayar tv kabel!,Utilities
+kost monthly fee please,Rent
+bayar listrik PLN today,Utilities
+hospital fee!,Health
+beli hadiah ulang tahun please,Other
+flat rent fee asap,Rent
+fisioterapi quickly,Health
+recharge prepaid electricity please,Utilities
+need to buy bread at bakery,Food
+villa rental now,Rent
+eating salad today,Food
+monthly cable TV,Utilities
+dinner with steak!,Food
+charity donation,Other
+kontrakan payment,Rent
+eating salad today,Food
+sumbangan masjid quickly,Other
+naik kapal ferry asap,Transport
+donate to orphanage,Other
+buy snacks at minimarket!,Food
+grab lunch box now,Food
+bayar listrik PLN now,Utilities
+bayar tol,Transport
+subscribe netflix quickly,Entertainment
+drink juice asap,Food
+naik gojek quickly,Transport
+buy new shoes now,Other
+sewa rumah tahunan quickly,Rent
+vaksinasi flu today,Health
+need to perbaikan atap rumah,Other
+makan mie goreng!,Food
+kost monthly fee!,Rent
+bayar rumah kontrakan!,Rent
+internet monthly fee quickly,Utilities
+monthly train pass,Transport
+purchase phone credit quickly,Utilities
+beli vitamin now,Health
+beli mainan anak now,Other
+sumbangan masjid,Other
+car maintenance,Transport
+beli tas baru,Other
+shopping clothes now,Other
+need to festival donation,Other
+wedding gift!,Other
+bayar tol asap,Transport
+cinema popcorn please,Entertainment
+bayar internet biznet today,Utilities
+apartment rental fee please,Rent
+beli kopi di cafe please,Food
+bayar tagihan PAM please,Utilities
+subscribe netflix please,Entertainment
+monthly cable TV,Utilities
+pharmacy purchase asap,Health
+sewa rumah tahunan today,Rent
+monthly house rent asap,Rent
+tes darah please,Health
+play video games asap,Entertainment
+kost monthly fee please,Rent
+nonton film online asap,Entertainment
+buy data package,Utilities
+buy furniture now,Other
+need to bayar uang kuliah,Other
+bayar pajak motor quickly,Other
+store rental today,Rent
+beli hp baru asap,Other
+bayar tol please,Transport
+need to cooking instant noodles,Food
+buy data package!,Utilities
+drink juice,Food
+cinema popcorn,Entertainment
+makan sate ayam please,Food
+tes darah quickly,Health
+beli tas baru!,Other
+bayar wifi indihome please,Utilities
+health insurance payment today,Health
+fisioterapi today,Health
+beli hp baru quickly,Other
+take the bus please,Transport
+bayar kosan asap,Rent
+fuel for motorcycle now,Transport
+bayar tagihan PAM today,Utilities
+beli bakso today,Food
+makan mie goreng now,Food
+beli masker asap,Health
+eye check up!,Health
+eye check up today,Health
+need to grabcar payment,Transport
+flat rent fee asap,Rent
+cooking spaghetti please,Food
+need to monthly house rent,Rent
+need to charity donation,Other
+perbaikan atap rumah please,Other
+bayar kos bulanan please,Rent
+gift for friend now,Other
+book cinema seat asap,Entertainment
+beli alat tulis,Other
+party expenses today,Entertainment
+apartment rental fee today,Rent
+beli vitamin please,Health
+theme park entry please,Entertainment
+watch theater show please,Entertainment
+watch concert today,Entertainment
+car maintenance,Transport
+bayar biaya pernikahan!,Other
+office rent please,Rent
+kost monthly fee,Rent
+bike rental,Transport
+buy laptop please,Other
+check up klinik quickly,Health
+office rent,Rent
+buy bread at bakery please,Food
+electricity payment,Utilities
+need to take the bus,Transport
+need to beli komik,Entertainment
+sewa motor harian!,Transport
+order bubble tea today,Food
+bayar uang kuliah,Other
+bayar PDAM bulanan please,Utilities
+need to order burger online,Food
+watch concert today,Entertainment
+pay school tuition now,Other
+bayar boarding house quickly,Rent
+festival donation please,Other
+perbaikan atap rumah please,Other
+mental health therapy now,Health
+monthly cable TV quickly,Utilities
+book cinema seat please,Entertainment
+beli obat sakit kepala,Health
+beli kopi di cafe,Food
+order burger online,Food
+beli kaset musik please,Entertainment
+beli obat sakit kepala please,Health
+bayar kontrakan rumah asap,Rent
+doctor consultation please,Health
+purchase phone credit!,Utilities
+eating salad,Food
+beli masker,Health
+bayar tol today,Transport
+lunch with fried chicken,Food
+need to subscribe netflix,Entertainment
+tes darah asap,Health
+football match ticket please,Entertainment
+bayar apartemen today,Rent
+pay water bill,Utilities
+villa rental asap,Rent
+bayar apartemen please,Rent
+water refill gallon today,Utilities
+monthly train pass quickly,Transport
+isi bensin mobil please,Transport
+check up klinik now,Health
+electricity payment,Utilities
+bayar kosan quickly,Rent
+need to beli martabak,Food
+order burger online now,Food
+buy pizza,Food
+beli kursi meja,Other
+bayar kosan quickly,Rent
+beli mainan anak asap,Other
+busway ticket,Transport
+breakfast sandwich,Food
+dinner with steak now,Food
+purchase phone credit,Utilities
+need to watch concert,Entertainment
+nonton bioskop today,Entertainment
+need to drink juice,Food
+buy bread at bakery,Food
+warehouse rent today,Rent
+apartment rental fee asap,Rent
+beli mainan anak quickly,Other
+pay water bill today,Utilities
+eat sushi with friends now,Food
+need to buy bread at bakery,Food
+vaksinasi flu,Health
+bayar kontrakan rumah,Rent
+air conditioner service,Utilities
+car maintenance quickly,Transport
+pesan ojek online now,Transport
+doctor consultation now,Health
+drink juice,Food
+sewa rumah tahunan quickly,Rent
+pesan ojek online!,Transport
+bayar boarding house quickly,Rent
+need to apartment rental fee,Rent
+pay water bill!,Utilities
+flat rent fee today,Rent
+subscribe netflix asap,Entertainment
+beli mie ayam,Food
+flat rent fee now,Rent
+beli obat sakit kepala please,Health
+wedding gift now,Other
+need to house renovation,Other
+need to internet monthly fee,Utilities
+need to makan sate ayam,Food
+hospital fee asap,Health
+beli obat batuk!,Health
+beli voucher game please,Entertainment
+lunch with fried chicken today,Food
+naik gojek now,Transport
+land rental asap,Rent
+festival donation quickly,Other
+beli voucher game asap,Entertainment
+kost monthly fee today,Rent
+need to eat sushi with friends,Food
+breakfast sandwich,Food
+order burger online asap,Food
+need to beli bakso,Food
+villa rental,Rent
+party expenses,Entertainment
+football match ticket today,Entertainment
+need to office rent,Rent
+office space lease quickly,Rent
+need to service listrik rumah,Utilities
+isi bensin mobil quickly,Transport
+vaksinasi flu!,Health
+bayar pajak motor today,Other
+sumbangan masjid quickly,Other
+beli token listrik asap,Utilities
+recharge prepaid electricity please,Utilities
+need to gym membership,Health
+theme park entry now,Entertainment
+gift for friend,Other
+phone postpaid bill!,Utilities
+book grab ride,Transport
+vaksinasi flu,Health
+house renovation asap,Other
+buy snacks at minimarket today,Food
+beli tas baru,Other
+phone postpaid bill asap,Utilities
+lunch with fried chicken now,Food
+doctor consultation today,Health
+bayar internet biznet,Utilities
+purchase phone credit asap,Utilities
+pay water bill!,Utilities
+naik kapal ferry today,Transport
+apartment rental fee,Rent
+fisioterapi asap,Health
+bayar PDAM bulanan!,Utilities
+beli kopi di cafe asap,Food
+buy books,Other
+buy supplements today,Health
+need to health insurance payment,Health
+book grab ride!,Transport
+buy new shoes quickly,Other
+party expenses please,Entertainment
+bayar kontrakan asap,Rent
+watch theater show,Entertainment
+breakfast sandwich please,Food
+pesan minuman boba!,Food
+beli komik now,Entertainment
+need to busway ticket,Transport
+bayar rumah kontrakan quickly,Rent
+bayar biaya pernikahan quickly,Other
+karaoke with friends please,Entertainment
+drink juice asap,Food
+need to buy furniture,Other
+festival donation today,Other
+bayar internet biznet asap,Utilities
+bayar PDAM bulanan asap,Utilities
+beli mainan anak asap,Other
+breakfast sandwich please,Food
+donate to orphanage today,Other
+bayar tol please,Transport
+bayar rumah sakit today,Health
+mental health therapy asap,Health
+need to order bubble tea,Food
+bayar internet biznet,Utilities
+makan nasi goreng,Food
+bayar PDAM bulanan!,Utilities
+order bubble tea,Food
+kost monthly fee now,Rent
+monthly house rent quickly,Rent
+hospital fee please,Health
+vaksinasi flu now,Health
+beli mie ayam!,Food
+beli tas baru now,Other
+need to naik angkot,Transport
+makan nasi goreng today,Food
+warehouse rent,Rent
+sumbangan masjid please,Other
+pesan ayam geprek,Food
+office rent please,Rent
+beli kursi meja!,Other
+need to mental health therapy,Health
+take the bus please,Transport
+bayar tol,Transport
+beli obat sakit kepala,Health
+need to bayar apartemen,Rent
+rent playstation,Entertainment
+need to nonton bioskop,Entertainment
+bayar pajak motor,Other
+phone postpaid bill today,Utilities
+streaming spotify quickly,Entertainment
+mental health therapy today,Health
+need to store rental,Rent
+gym membership asap,Health
+parkir mobil please,Transport
+bayar internet biznet asap,Utilities
+bayar apartemen,Rent
+isi bensin mobil today,Transport
+store rental asap,Rent
+need to streaming spotify,Entertainment
+buy new shoes quickly,Other
+need to bayar listrik PLN,Utilities
+need to bayar internet biznet,Utilities
+airport shuttle booking quickly,Transport
+tes darah!,Health
+need to breakfast sandwich,Food
+buy bread at bakery today,Food
+buy laptop,Other
+ride train to work quickly,Transport
+beli parfum asap,Other
+office rent please,Rent
+rent playstation today,Entertainment
+store rental,Rent
+beli alat tulis today,Other
+doctor consultation,Health
+beli mie ayam today,Food
+call taxi today,Transport
+bayar apartemen!,Rent
+bayar boarding house now,Rent
+service listrik rumah asap,Utilities
+bayar rumah sakit now,Health
+grocery shopping vegetables,Food
+sewa motor harian!,Transport
+charity donation now,Other
+buy medicine!,Health
+beli alat tulis,Other
