@@ -16,7 +16,7 @@ async function startServer() {
         await mongoose.connect(process.env.MONGODB_URL)
         console.log('Connected to MongoDB');
 
-        await classifer.trainModel('./src/train/data/finance_training_data_1000.csv');
+        await classifer.trainModel('./src/train/data/finance_training_data_bilingual_2000.csv');
         console.log('Model trained successfully');
 
         app.listen(process.env.PORT, () => {

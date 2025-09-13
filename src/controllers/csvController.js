@@ -7,7 +7,7 @@ const csv = require('fast-csv');
 exports.importCSV = async (req, res) => {
     try {
         const transactions = [];
-
+        console.log(fs.readFileSync(req.file.path, 'utf8'));
         fs.createReadStream(req.file.path)
         .pipe(csv.parse({ headers: true }))
         .on('data', (row) => {
