@@ -1,5 +1,6 @@
 const Transaction = require('../models/Transaction');
 const User = require('../models/User');
+const Category = require('../models/Category');
 
 exports.addTransaction = async (req, res) => {
     try {
@@ -15,8 +16,17 @@ exports.addTransaction = async (req, res) => {
             return res.status(400).json({message: 'User not found'});
         }
 
+        const categoryExists = await Category.findOne({
+            _id : category
+        })
+
+        if (!categoryExists) {
+            return res.status(400).json({message: 'Category not found'});
+        }
+
         const transaction = new Transaction({
             ...req.body,
+            categoryId : categoryExists._id,
             userId : req.user.id
         })
 

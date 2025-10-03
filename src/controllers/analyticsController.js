@@ -54,7 +54,14 @@ exports.getCategoryDistribution = async (req, res) => {
 exports.getForecastPerCategory = async (req, res) => {
     try {
         const userId = req.user.id;
-        const transactions = await Transaction.find({ user: userId }).sort({ date: 1 });
+        //6 month forecast per category 6 months before the last transaction date
+        const date = new Date();
+        date.setMonth(date.getMonth() - 6);
+        const transactions = await Transaction.find({ user: userId, date: { $gte: date } }).sort({ date: 1 });
+        if (transactions.length === 0) {
+            return res.status(400).json({ message: 'No transactions found for user' });
+        }
+        // const transactions = await Transaction.find({ user: userId }).sort({ date: 1 });
         const categoryWiseData = {};
 
         transactions.forEach(txn => {
@@ -78,5 +85,20 @@ exports.getForecastPerCategory = async (req, res) => {
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: error.message });
+    }
+}
+
+
+exports.getAnalyticsInsight = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const transactions = await Transaction.find({ user: userId });
+        // Perform analysis on transactions
+        const insights = analyzeTransactions(transactions);
+        res.json({ message: "Analytics insights retrieved successfully", insights });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: error.message });
+        
     }
 }
