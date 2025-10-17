@@ -28,7 +28,7 @@ exports.login = async (req, res) => {
         res.cookie('token', token, {
             maxAge : 24 * 60 * 60 * 1000
         })
-        return res.status(200).json({message: 'Login successful', user : {username: user.username, email: user.email}});
+        return res.status(200).json({message: 'Login successful', token : token});
     
     } catch (error) {
         return res.status(400).json({error : error.message})

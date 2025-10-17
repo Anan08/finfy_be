@@ -4,14 +4,17 @@ const Category = require('../models/Category');
 
 exports.addTransaction = async (req, res) => {
     try {
-        const { description, amount, category, date } = req.body;
+        const { description, amount, category } = req.body;
+        const { date } = req.query;
 
-        if (!description || !amount || !date) {
+        const dateOfTransaction = date ? new Date(date) : new Date();
+
+        if (!description || !amount) {
             return res.status(400).json({message: 'Please provide all required fields'});
         }
 
         const user = await User.findById(req.user.id);
-
+        
         if (!user) {
             return res.status(400).json({message: 'User not found'});
         }
@@ -26,6 +29,7 @@ exports.addTransaction = async (req, res) => {
 
         const transaction = new Transaction({
             ...req.body,
+            date : dateOfTransaction,
             categoryId : categoryExists._id,
             userId : req.user.id
         })

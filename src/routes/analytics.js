@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const analyticsController = require('../controllers/analyticsController');
 const { authenticate } = require('../lib/auth');
+const analyticsController = require('../controllers/analyticsController');
 
-router.get('/category-distribution', authenticate, analyticsController.getCategoryDistribution);
-router.get('/forecast', authenticate, analyticsController.getForecast);
+router.get('/this-month-spending', authenticate, analyticsController.getThisMonthSpending);
+router.get('/monthly-expenses-by-category', authenticate, analyticsController.MonthlyExpensesByCategory);
 
 module.exports = router;
