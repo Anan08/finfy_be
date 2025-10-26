@@ -4,7 +4,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon app.js"
+    "dev": "nodemon app.js",
+    "seed" : "node seedCategories seedTransactions"
   },
   "keywords": [],
   "author": "",
@@ -15,6 +16,7 @@
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
+    "expo-secure-store": "^15.0.7",
     "express": "^5.1.0",
     "fast-csv": "^5.0.5",
     "groq-sdk": "^0.32.0",

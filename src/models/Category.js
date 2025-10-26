@@ -9,7 +9,7 @@ const categorySchema = new mongoose.Schema({
     },
     categoryType : {
         type : String,
-        enum : ['incomes', 'expenses', 'debt', 'invest', 'savings'],
+        enum : ['income', 'expense', 'debt', 'invest', 'saving'],
         required : true
     },
     description : {

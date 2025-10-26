@@ -3,21 +3,23 @@ const Category = require('./src/models/Category');
 require('dotenv').config();
 
 const categoryList = [
-    { name: 'Food', categoryType: 'Expense', description: 'Expenses related to food and dining' },
-    { name: 'Transport', categoryType: 'Expense', description: 'Expenses related to transportation' },
-    { name: 'Utilities', categoryType: 'Expense', description: 'Expenses for utilities like electricity, water, etc.' },
-    { name: 'Entertainment', categoryType: 'Expense', description: 'Expenses for entertainment and leisure activities' },
-    { name: 'Health', categoryType: 'Expense', description: 'Medical and healthcare-related expenses' },
-    { name: 'Other', categoryType: 'Expense', description: 'Expenses that do not fit into other categories' },
-    { name: 'Rent', categoryType: 'Expense', description: 'Monthly rent payments' },
-    { name: 'Salary', categoryType: 'Income', description: 'Income from salary or wages' },
+    { name: 'Food', categoryType: 'expense', description: 'Expenses related to food and dining' },
+    { name: 'Transport', categoryType: 'expense', description: 'Expenses related to transportation' },
+    { name: 'Utilities', categoryType: 'expense', description: 'Expenses for utilities like electricity, water, etc.' },
+    { name: 'Entertainment', categoryType: 'expense', description: 'Expenses for entertainment and leisure activities' },
+    { name: 'Health', categoryType: 'expense', description: 'Medical and healthcare-related expenses' },
+    { name: 'Other', categoryType: 'expense', description: 'Expenses that do not fit into other categories' },
+    { name: 'Rent', categoryType: 'expense', description: 'Monthly rent payments' },
+    { name: 'Salary', categoryType: 'income', description: 'Income from salary or wages' },
+    { name: 'Investment', categoryType: 'invest', description: "Money for Investment"},
+    { name: 'Saving', categoryType: 'saving', description: "Money for Saving"},
+    { name : 'Debt', categoryType: 'debt', description: "Debt Needs to be paid"},
 ];
 
 async function seedCategories() {
     try {
         await mongoose.connect(process.env.MONGODB_URL);
-
-        // Wipe all existing categories
+        
         await Category.deleteMany({});
         console.log('All categories deleted');
 

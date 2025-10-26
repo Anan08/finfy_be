@@ -2,39 +2,128 @@ const Transaction = require('../models/Transaction');
 const Category = require('../models/Category');
 const mongoose = require('mongoose');
 const Groq = require('groq-sdk');
-const { financialProfile } = require('../lib/analyzer');
+// const { financialProfile } = require('../lib/analyzer');
 
-// exports.getCategoryDistribution = async (req, res) => {
-//     try {
-//         const userId = req.user.id;
-//         const transactions = await Transaction.find({ user: userId });
-//         const categoryDistribution = {};
-
-//         transactions.forEach(txn => {
-//             if (!categoryDistribution[txn.category]) {
-//                 categoryDistribution[txn.category] = 0;
-//             }
-//             categoryDistribution[txn.category] += txn.amount;
-//         })
-
-//         res.json({message : "Category distribution retrieved successfully", categoryDistribution : categoryDistribution});
-//     } catch (error) {
-//         console.log(error);
-//         res.status(500).json({ message: error.message });
-//     }
-
-// }
+const client = new Groq({
+    apiKey: process.env.GROQ_API_KEY,
+}); 
 
 exports.getFinancialProfile = async (req, res) => {
     try {
         const userId = req.user.id;
-        const profile = await financialProfile(userId);
+        const currentDate = new Date();
+        const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+        const endOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+
+        const transactions = await Transaction.aggregate([
+            { 
+            $match: { 
+                userId: new mongoose.Types.ObjectId(userId), 
+                date: { $gte: startOfMonth, $lte: endOfMonth } 
+            } 
+            },
+            {
+            $lookup: {
+                from: "categories",
+                localField: "category",
+                foreignField: "_id",
+                as: "categoryInfo"
+            }
+            },
+            { $unwind: "$categoryInfo" },
+            {
+            $group: {
+                _id: "$categoryInfo.name",
+                type: { $first: "$categoryInfo.categoryType" },
+                total: { $sum: "$amount" }
+            }
+            }
+        ]);
+
+        const sumByType = (type) =>
+            transactions.filter(t => t.type === type).reduce((acc, curr) => acc + curr.total, 0);
+
+        const income = sumByType('income');
+        const expenses = sumByType('expense');
+        const debt = sumByType('debt');
+        const investments = sumByType('invest');
+        const savings = sumByType('savings');
+
+        const livingCost = transactions
+            .filter(t => ['Food', 'Rent', 'Utilities', 'Transport'].includes(t._id))
+            .reduce((acc, curr) => acc + curr.total, 0);
+
+        const cashFlow = income - expenses;
+
+        const safeRatio = (a, b) => (b === 0 ? 0 : (a / b) * 100);
+
+        const ratios = {
+            debtRatio: safeRatio(debt, income).toFixed(2),
+            investmentRatio: safeRatio(investments, income).toFixed(2),
+            savingsRatio: safeRatio(cashFlow, income).toFixed(2),
+            livingCostRatio: safeRatio(livingCost, income).toFixed(2)
+        };
+
+        const emergencyFundGoalMin = income * 3;
+        const emergencyFundGoalMax = income * 6;
+        const emergencyFundProgress = safeRatio(savings, emergencyFundGoalMax).toFixed(2);
+
+        const profile = {
+            income,
+            expenses,
+            cashFlow,
+            ratios,
+            emergencyFund: {
+            goalMin: emergencyFundGoalMin,
+            goalMax: emergencyFundGoalMax,
+            current: savings,
+            progress: emergencyFundProgress
+            }
+        };
         res.status(200).json({ message: "Financial profile retrieved successfully", profile });
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: error.message });
     }   
 };
+
+exports.financialProfileLastYear = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const currentDate = new Date();
+        const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+        const endOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+        const instruction = `
+        You are a certified financial advisor assistant. 
+        Give clear actionable advice, based on the user's financial data and goals. 
+        Always include a JSON block with:
+        - recommendations (array of strings)`;
+
+        const userPrompt = `
+        This month history JSON:
+        ${JSON.stringify(finance || {}, null, 2)}
+
+        User context:
+        ${JSON.stringify(context || {}, null, 2)}
+        `;
+
+
+        const response = await client.chat.completions.create({
+            model: 'llama-3.1-8b-instant',
+                messages: [
+                    { role: 'system', content: instruction },
+                    { role: 'user', content: userPrompt }
+                ],
+                max_tokens: 700,
+                temperature: 0.2
+        })
+
+        
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message : error.message });
+    }
+}
 
 exports.getAnalyticsInsight = async (req, res) => {
     try {
@@ -151,7 +240,7 @@ exports.MonthlyExpensesByCategory = async (req, res) => {
                 }
             },
             { $unwind: "$categoryInfo" },
-            { $match: { "categoryInfo.categoryType": "Expense" } },
+            { $match: { "categoryInfo.categoryType": "expense" } },
             {
                 $group: {
                     _id: "$categoryInfo.name",

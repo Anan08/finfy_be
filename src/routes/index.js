@@ -7,6 +7,7 @@ const csvRoutes = require('./csv');
 const chatRoutes = require('./chat');
 const categoriesRoutes = require('./categories');
 
+router.get('/', (req, res) => res.send("FINFY API LOCAL"))
 router.use('/auth', authRoutes);
 router.use('/transaction', tranasctionRoutes);
 router.use('/analytics', analyticsRoutes);
