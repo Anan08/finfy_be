@@ -3,9 +3,6 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 exports.login = async (req, res) => {
-    // if (req.cookies && req.cookies.token) {
-    //     return res.status(400).json({message: 'Already logged in'});
-    // }
 
     if (!req.body.username || !req.body.password) {
         return res.status(400).json({message: 'Please provide username and password'});
@@ -22,7 +19,7 @@ exports.login = async (req, res) => {
         
         if (!isMatch) return res.status(400).json({message: 'Invalid credentials'});
         
-        const token = jwt.sign({id : user._id}, process.env.JWT_SECRET, {expiresIn : '1d'});
+        const token = jwt.sign({id : user._id}, process.env.JWT_SECRET, {expiresIn : '30d'});
 
         return res.status(200).json({message: 'Login successful', token : token});
     
@@ -59,11 +56,6 @@ exports.register = async (req, res) => {
 };
 
 exports.logout = async (req, res) => {
-    
-    if (!req.cookies.token) {
-        return res.status(400).json({message: 'No active session found'});
-    }
-    
     try {
         return res.clearCookie('token').json({message: 'Logged out successfully'});
     } catch (error) {

@@ -90,3 +90,29 @@ exports.updateTransaction = async (req, res) => {
         return res.status(400).json({error : error.message})
     }
 }
+
+
+exports.getTransactionPerPage = async (req, res) => {
+    try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const skip = (page - 1) * limit;
+
+        const transactions = await Transaction.find({ userId: req.user.id })
+            .sort({ date: -1 })
+            .skip(skip)
+            .limit(limit);
+
+        const total = await Transaction.countDocuments({ userId: req.user.id });
+
+        return res.status(200).json({
+            transactions,
+            total,
+            page,
+            lastPage: Math.ceil(total / limit)
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json({ error: error.message });
+    }
+}
