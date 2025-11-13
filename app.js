@@ -6,7 +6,6 @@ require('dotenv').config();
 const cors = require('cors');
 const routes = require('./src/routes');
 
-//whitelist every origin
 app.use(cors({
     origin : "*"
 }))
