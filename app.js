@@ -24,7 +24,7 @@ async function startServer() {
         app.listen(process.env.PORT,'0.0.0.0', () => {
             console.log(`Server is running on http://0.0.0.0:${process.env.PORT}`);
         });
-    } catch (error) {
+    } catch (error) {z
         console.log('Error starting server:', error);
         process.exit(1);
     }

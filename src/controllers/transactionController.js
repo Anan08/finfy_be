@@ -45,13 +45,17 @@ exports.addTransaction = async (req, res) => {
 
 exports.getTransactions = async (req, res) => {
     try {
-        const transaction = await Transaction.find({userId : req.user.id}).sort({date : -1});
-        return res.status(200).json({transactions : transaction});
+        const transactions = await Transaction.find({ userId: req.user.id })
+            .populate("category", "name categoryType")
+            .sort({ createdAt: -1 });
+
+        return res.status(200).json({ transactions });
     } catch (error) {
         console.log(error);
-        return res.status(400).json({error : error.message})
+        return res.status(400).json({ error: error.message });
     }
 }
+
 
 exports.deleteTransaction = async (req, res) => {
     try {

@@ -15,17 +15,9 @@ const insightSchema = new mongoose.Schema({
       type: [String],
       default: []
     },
-    expected_savings_estimate: {
-      type: Number,
-      default: 0
-    },
     risk_notes: {
       type: String,
       default: ''
-    },
-    follow_up_questions: {
-      type: [String],
-      default: []
     }
   }
 }, {

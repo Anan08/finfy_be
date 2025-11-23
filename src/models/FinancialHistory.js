@@ -8,7 +8,7 @@ const financialProfileHistorySchema = new mongoose.Schema({
     index: true
   },
   month: {
-    type: String, // e.g. "2025-11"
+    type: String,
     required: true,
     index: true
   },

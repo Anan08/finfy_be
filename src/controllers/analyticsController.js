@@ -20,6 +20,48 @@ exports.getFinancialProfile = async (req, res) => {
     }   
 };
 
+exports.getSpendingDistribution = async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        const transactions = await Transaction
+            .find({ userId })
+            .populate('category');
+
+        const expenses = transactions.filter(
+            tx => tx.category.categoryType === 'expense'
+        );
+
+        let categoryMap = {};
+
+        for (let tx of expenses) {
+            const catName = tx.category.name;
+            if (!categoryMap[catName]) {
+                categoryMap[catName] = 0;
+            }
+            categoryMap[catName] += tx.amount;
+        }
+
+        const total = Object.values(categoryMap).reduce((a, b) => a + b, 0);
+
+        const result = Object.entries(categoryMap).map(([name, totalAmount]) => ({
+            category: name,
+            totalAmount,
+            percentage: total === 0 ? 0 : ((totalAmount / total) * 100).toFixed(2)
+        }));
+
+        res.json({
+            message: "Spending distribution retrieved",
+            distribution: result
+        });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: error.message });
+    }
+};
+
+
 
 exports.getAnalyticsInsight = async (req, res) => {
     try {
