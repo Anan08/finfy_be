@@ -35,7 +35,7 @@ exports.autoCategorizeTransactions = async (userId, categoryList) => {
         `;
         const response = await client.generateText({
             prompt,
-            maxTokens: 10,
+            maxToke0ns: 10,
             temperature: 0.5,
         });
         const categoryName = response.text.trim();
