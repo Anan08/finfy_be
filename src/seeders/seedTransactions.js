@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 require('dotenv').config();
 
-const Transaction = require('./src/models/Transaction');
-const Category = require('./src/models/Category');
-const User = require('./src/models/User'); // assumes you already have a user model
+const Transaction = require('../models/Transaction');
+const Category = require('../models/Category');
+const User = require('../models/User'); // assumes you already have a user model
 
 async function seedTransactions() {
   try {

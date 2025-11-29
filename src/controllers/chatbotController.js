@@ -1,7 +1,7 @@
 const Groq = require('groq-sdk');
-const { advisorType } = require('./../lib/advisorType');
 const Transaction = require('../models/Transaction');
 const User = require('../models/User');
+const Advisor = require('../models/Advisor');
 require('dotenv').config();
 
 const client = new Groq({
@@ -10,7 +10,7 @@ const client = new Groq({
 
 exports.getModel = async (req, res) => {
     try {
-        // tinggal balikin list advisor biar frontend bisa pilih
+        const advisorType = await Advisor.find({});
         res.json({ advisors: advisorType });
     } catch (error) {
         console.log(error);
@@ -20,14 +20,13 @@ exports.getModel = async (req, res) => {
 
 exports.getChatResponse = async (req, res) => {
     try {
-        const { message, finance, forecast, context, advisor } = req.body;
+        const { message, finance, forecast, context, advisorId } = req.body;
 
         if (!message) {
             return res.status(400).json({ message: 'Message is required' });
         }
 
-        // cari advisor personality
-        const selectedAdvisor = advisorType.find(a => a.name === advisor);
+        const selectedAdvisor = await Advisor.findOne({ _id: advisorId });
 
         if (!selectedAdvisor) {
             return res.status(400).json({ message: 'Invalid advisor type' });
@@ -78,6 +77,7 @@ exports.getChatResponse = async (req, res) => {
         } catch (err) {
             console.error("Failed to parse AI JSON:", err.message);
         }
+
 
         return res.status(200).json({
             reply: aiMessage,

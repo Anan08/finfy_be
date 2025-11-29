@@ -4,16 +4,17 @@ const authRoutes = require('./auth');
 const tranasctionRoutes = require('./transaction');
 const analyticsRoutes = require('./analytics');
 const csvRoutes = require('./csv');
-const chatRoutes = require('./chat');
+const chatbotRoutes = require('./advisors');
 const categoriesRoutes = require('./categories');
+
 
 router.get('/', (req, res) => res.send("FINFY API"))
 router.use('/auth', authRoutes);
 router.use('/transaction', tranasctionRoutes);
 router.use('/analytics', analyticsRoutes);
 router.use('/csv', csvRoutes);
-router.use('/chat', chatRoutes);
 router.use('/categories', categoriesRoutes);
+router.use('/chatbot', chatbotRoutes);
 
 module.exports = router;
 
