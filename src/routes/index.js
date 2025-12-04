@@ -4,7 +4,8 @@ const authRoutes = require('./auth');
 const tranasctionRoutes = require('./transaction');
 const analyticsRoutes = require('./analytics');
 const csvRoutes = require('./csv');
-const chatbotRoutes = require('./advisors');
+const advisorsRoutes = require('./advisors');
+const chatRoutes = require('./chat');
 const categoriesRoutes = require('./categories');
 
 
@@ -14,7 +15,8 @@ router.use('/transaction', tranasctionRoutes);
 router.use('/analytics', analyticsRoutes);
 router.use('/csv', csvRoutes);
 router.use('/categories', categoriesRoutes);
-router.use('/chatbot', chatbotRoutes);
+router.use('/chat', chatRoutes);
+router.use('/advisors', advisorsRoutes);
 
 module.exports = router;
 

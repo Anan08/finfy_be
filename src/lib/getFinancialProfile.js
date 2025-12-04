@@ -75,5 +75,3 @@ exports.getFinancialProfileData = async (userId) => {
         };
         return profile;
 };
-
-exports.getTotalFinancialProfile = async (userId) => {};

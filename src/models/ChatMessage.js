@@ -1,3 +1,5 @@
+const mongoose = require('mongoose');
+
 const ChatMessageSchema = new mongoose.Schema({
     chatSessionId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -11,10 +13,12 @@ const ChatMessageSchema = new mongoose.Schema({
     },
     message: {
         type: String,
-        required: true,
+        required: false,
     },
     structured: {
         type: Object,
         default: null,
     },
 }, { timestamps: true });
+
+module.exports = mongoose.model('ChatMessage', ChatMessageSchema);

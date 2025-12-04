@@ -14,8 +14,6 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(routes);
 
-require('./src/jobs/scheduler')
-
 async function startServer() {
     try {
         await mongoose.connect(process.env.MONGODB_URL)
