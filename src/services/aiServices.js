@@ -4,7 +4,7 @@ require('dotenv').config();
 
 const client = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
-exports.getAIResponse = async ({ message, financialProfile, context, advisorId }) => {
+exports.getAIResponse = async ({ conversation, financialProfile, context, advisorId, message }) => {
     const selectedAdvisor = await Advisor.findById(advisorId);
 
     const instruction = `
@@ -29,12 +29,15 @@ exports.getAIResponse = async ({ message, financialProfile, context, advisorId }
     ${JSON.stringify(context || {}, null, 2)}
     `;
 
+    const messages = [
+        { role: 'system', content: instruction },
+        ...conversation,
+        { role: 'user', content: userPrompt }
+    ];
+
     const response = await client.chat.completions.create({
         model: 'llama-3.1-8b-instant',
-        messages: [
-            { role: 'system', content: instruction },
-            { role: 'user', content: userPrompt }
-        ],
+        messages,
         max_tokens: 400,
         temperature: 0.2
     });

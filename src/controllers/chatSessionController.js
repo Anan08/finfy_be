@@ -96,7 +96,6 @@ exports.endSession = async (req, res) => {
         res.status(500).json({ success: false, error: err.message });
     }
 };
-
 exports.sendMessage = async (req, res) => {
     try {
         const { sessionId, message } = req.body;
@@ -110,23 +109,43 @@ exports.sendMessage = async (req, res) => {
             return res.status(400).json({ message: 'Invalid or inactive chat session.' });
         }
 
+        // SAVE USER MESSAGE
         const userMessage = await ChatMessage.create({
             chatSessionId: sessionId,
             sender: 'user',
             message,
         });
 
-        const financialProfile = await getFinancialProfileData(req.user.id);
-        const context = {
-            "occupation" : "mahasiswa",
-            "age" : 22,
-            "financial_goals" : ["Savings for emergency fund", "Investing for retirement"],
-            "risk_tolerance" : "medium",
-            "income" : 5000000,
-            "monthly_expenses" : 3000000
-        }
+        // GET CHAT HISTORY (INCLUDING USER MESSAGE ABOVE)
+        const history = await ChatMessage
+            .find({ chatSessionId: sessionId })
+            .sort({ createdAt: 1 });
 
-        const ai = await getAIResponse({sessionId, message, financialProfile : financialProfile, context : context, advisorId : session.advisorId});
+        // CONVERT MONGODB DOCS INTO AI-FRIENDLY FORMAT
+        const chatConversation = history.map(h => ({
+            role: h.sender === 'user' ? 'user' : 'assistant',
+            content: h.message
+        }));
+
+        // GET FINANCIAL PROFILE DATA
+        const financialProfile = await getFinancialProfileData(req.user.id);
+
+        const ai = await getAIResponse({
+            sessionId,
+            message,
+            conversation: chatConversation,
+            financialProfile,
+            context: {
+                "occupation" : "mahasiswa",
+                "age" : 22,
+                "financial_goals" : ["Savings for emergency fund", "Investing for retirement"],
+                "risk_tolerance" : "medium",
+                "income" : 5000000,
+                "monthly_expenses" : 3000000
+            },
+            advisorId: session.advisorId
+        });
+
         const aiMessage = await ChatMessage.create({
             chatSessionId: sessionId,
             sender: 'advisor',
@@ -136,15 +155,16 @@ exports.sendMessage = async (req, res) => {
 
         res.json({
             success: true,
-            user : userMessage,
+            user: userMessage,
             ai: aiMessage
         });
 
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: error.message });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: err.message });
     }
-} 
+};
+
 
 exports.getUserSessions = async (req, res) => {
     try {
