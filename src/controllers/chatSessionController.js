@@ -24,6 +24,20 @@ exports.startSession = async (req, res) => {
     }
 };
 
+exports.deleteSession = async (req, res) => {
+    try {
+        const { sessionId } = req.params;
+
+        const session = await ChatSession.findOneAndDelete({ _id: sessionId });
+        if (!session) {
+            return res.status(404).json({ success: false, message: 'Chat session not found or unauthorized.' });
+        }
+        await ChatMessage.deleteMany({ chatSessionId: sessionId });
+        res.json({ success: true, message: 'Chat session deleted successfully.' });
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
+}
 
 exports.addMessage = async (req, res) => {
     try {

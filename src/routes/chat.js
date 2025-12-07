@@ -5,6 +5,7 @@ const { authenticate } = require('../lib/auth');
 
 router.post('/start', authenticate, chatSessionController.startSession);
 router.get('/sessions', authenticate, chatSessionController.getUserSessions);
+router.delete('/session/:sessionId', authenticate, chatSessionController.deleteSession);
 router.get('/:sessionId/history', authenticate, chatSessionController.getChatHistory);
 router.post('/reset', authenticate, chatSessionController.resetChat);
 router.post('/end', authenticate, chatSessionController.endSession);

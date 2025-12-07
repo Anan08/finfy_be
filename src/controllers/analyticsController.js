@@ -3,7 +3,7 @@ const Category = require('../models/Category');
 const Insight = require('../models/Insight');
 const mongoose = require('mongoose');
 const Groq = require('groq-sdk');
-const getFinancialProfileData = require('../lib/getFinancialProfile');
+const {getFinancialProfileData} = require('../lib/getFinancialProfile');
 
 const client = new Groq({
     apiKey: process.env.GROQ_API_KEY,
@@ -12,7 +12,7 @@ const client = new Groq({
 exports.getFinancialProfile = async (req, res) => {
     try {
         const userId = req.user.id;
-        const profile = await getFinancialProfileData.getFinancialProfileData(userId);
+        const profile = await getFinancialProfileData(userId);
         res.status(200).json({ message: "Financial profile retrieved successfully", profile });
     } catch (error) {
         console.log(error);
@@ -66,43 +66,50 @@ exports.getSpendingDistribution = async (req, res) => {
 exports.getAnalyticsInsight = async (req, res) => {
     try {
         const userId = req.user.id;
-        const cachedInsight = await Insight.findOne({ userId: userId }).sort({ updatedAt: -1 });
-        const isRecent = cachedInsight && (new Date() - new Date(cachedInsight.updatedAt)) < 12 * 60 * 60 * 1000;
+        // const cachedInsight = await Insight.findOne({ userId: userId }).sort({ updatedAt: -1 });
+        // const isRecent = cachedInsight && (new Date() - new Date(cachedInsight.updatedAt)) < 12 * 60 * 60 * 1000;
 
-        if (isRecent) {
-            return res.json({ message: "Analytics insights retrieved successfully", insights: cachedInsight.insights });
-        }
-        const finance = await getFinancialProfile(userId);
+        // if (isRecent) {
+        //     return res.json({ message: "Analytics insights retrieved successfully", insights: cachedInsight.insights });
+        // }
+        // GET FINANCIAL PROFILE DATA
+        const financialProfile = await getFinancialProfileData(req.user.id);
+
         const instruction = `
         You are a certified financial advisor assistant. 
         Give clear actionable advice, based on the user's financial data and goals. 
         Always include a JSON block with:
-        - recommendations (array of strings)
-        - expected_savings_estimate (number)
-        - risk_notes (string)
-        - follow_up_questions (array of strings)`;
+        - clear analytics of the financial profile given atleast 6 (array of strings in indonesian language named "financialProfile")`;
 
         const response = await client.chat.completions.create({
             model: 'llama-3.1-8b-instant',
             messages: [
                 { role: 'system', content: instruction },
-                { role: 'user', content: JSON.stringify(finance, null, 2) }
+                { role: 'user', content: JSON.stringify(financialProfile, null, 2) }
             ],
             max_tokens: 700,
             temperature: 0.2
         });
 
+        // res.json("AI Raw Response:", response);
+
         const aiMessage = response.choices[0].message.content;
         const jsonMatch = aiMessage.match(/\{[\s\S]*\}/);
         const structured = jsonMatch ? JSON.parse(jsonMatch[0]) : null;
 
+        console.log("AI Structured Response:", structured);
         const insight = await Insight.findOneAndUpdate(
             { userId },
             { date: new Date(), structured },
             { upsert: true, new: true }
         );
 
-        res.json({ message: "Analytics insights retrieved successfully", insight });
+
+        res.json({
+            message: "Analytics insights retrieved successfully",
+            insights: structured.financialProfile
+        });
+
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: error.message });
