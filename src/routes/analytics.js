@@ -8,5 +8,6 @@ router.get('/monthly-expenses-by-category', authenticate, analyticsController.Mo
 router.get('/financial-profile', authenticate, analyticsController.getFinancialProfile);
 router.get('/spending-distribution', authenticate, analyticsController.getSpendingDistribution);
 router.get('/ai-insight', authenticate, analyticsController.getAnalyticsInsight)
+router.get('/saved-insights', authenticate, analyticsController.getSavedInsights);
 
 module.exports = router;

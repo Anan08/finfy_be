@@ -11,14 +11,14 @@ const insightSchema = new mongoose.Schema({
     required: true
   },
   structured: {
-    recommendations: {
+    financialProfile: {
       type: [String],
       default: []
-    },
-    risk_notes: {
-      type: String,
-      default: ''
     }
+  },
+  attempts: {
+    type: Number,
+    default: 0
   }
 }, {
   timestamps: true

@@ -66,13 +66,28 @@ exports.getSpendingDistribution = async (req, res) => {
 exports.getAnalyticsInsight = async (req, res) => {
     try {
         const userId = req.user.id;
-        // const cachedInsight = await Insight.findOne({ userId: userId }).sort({ updatedAt: -1 });
-        // const isRecent = cachedInsight && (new Date() - new Date(cachedInsight.updatedAt)) < 12 * 60 * 60 * 1000;
 
-        // if (isRecent) {
-        //     return res.json({ message: "Analytics insights retrieved successfully", insights: cachedInsight.insights });
-        // }
-        // GET FINANCIAL PROFILE DATA
+        const insight = await Insight.findOne({userId});
+        const now = new Date();
+
+        if (!insight) {
+            await Insight.create({userId, date: now, structured: {financialProfile: []}, attempts: 0});
+        };
+
+        const isSameDay = insight.date.toDateString() === now.toDateString();
+
+        // Limit attempts
+        if (isSameDay && insight.attempts >= 2) {
+            return res.status(429).json({
+                message: "Maximum attempts reached for today. Try again tomorrow."
+            });
+        }
+
+        // If new day, reset attempts
+        if (!isSameDay) {
+            insight.attempts = 0;
+        }
+
         const financialProfile = await getFinancialProfileData(req.user.id);
 
         const instruction = `
@@ -91,23 +106,23 @@ exports.getAnalyticsInsight = async (req, res) => {
             temperature: 0.2
         });
 
-        // res.json("AI Raw Response:", response);
-
         const aiMessage = response.choices[0].message.content;
         const jsonMatch = aiMessage.match(/\{[\s\S]*\}/);
         const structured = jsonMatch ? JSON.parse(jsonMatch[0]) : null;
 
         console.log("AI Structured Response:", structured);
-        const insight = await Insight.findOneAndUpdate(
-            { userId },
-            { date: new Date(), structured },
-            { upsert: true, new: true }
-        );
+        
+        insight.date = now;
+        insight.structured = structured;
+        insight.attempts += 1;
+
+        await insight.save();
 
 
         res.json({
             message: "Analytics insights retrieved successfully",
-            insights: structured.financialProfile
+            insights: structured.financialProfile,
+            attempts : insight.attempts
         });
 
     } catch (error) {
@@ -217,3 +232,23 @@ exports.MonthlyExpensesByCategory = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+exports.getSavedInsights = async (req, res) => {
+    try {
+        const now = new Date();
+        const userId = req.user.id;
+        let insights = await Insight.find({ userId });
+        if (!insights) {
+            await Insight.create({userId, date: new Date(), structured: {financialProfile: []}, attempts: 0});
+            res.status(200).json({ message: "No insights found. Initialized new insight.", insights: [] });
+        }
+        if (insights.attempts >= 2 && insights.date.toDateString() !== now.toDateString()) {
+            insights.attempts = 0;
+            await insights.save();
+        }   
+        res.status(200).json({ message: "Insights retrieved successfully", insights, attempts : insights?.[0]?.attempts ?? 0 });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: error.message });
+    }
+}
