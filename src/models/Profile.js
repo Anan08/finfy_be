@@ -7,17 +7,18 @@ const profileSchema = new mongoose.Schema({
         required : true,
         unique : true
     },
-    bio : {
-        type : String,
-        default : ''
-    },
     job : {
         type : String,
         default : ''
     },
     age : {
         type : Number,
-        min : 0
+        min : 0,
+        default : null
+    },
+    fullName : {
+        type : String,
+        default : ''
     },
     goals : {
         type : [String],

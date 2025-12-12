@@ -7,7 +7,7 @@ const csvRoutes = require('./csv');
 const advisorsRoutes = require('./advisors');
 const chatRoutes = require('./chat');
 const categoriesRoutes = require('./categories');
-
+const profileRoutes = require('./profile');
 
 router.get('/', (req, res) => res.send("FINFY API"))
 router.use('/auth', authRoutes);
@@ -17,6 +17,7 @@ router.use('/csv', csvRoutes);
 router.use('/categories', categoriesRoutes);
 router.use('/chat', chatRoutes);
 router.use('/advisors', advisorsRoutes);
+router.use('/profile', profileRoutes);
 
 module.exports = router;
 

@@ -5,7 +5,7 @@ const { authenticate } = require('../lib/auth');
 
 router.post('/login', authController.login);
 router.post('/register', authController.register);
-router.get('/logout', authController.logout);
+// router.get('/logout', authController.logout);
 router.get('/me', authenticate, authController.me);
 
 module.exports = router;
