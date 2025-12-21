@@ -20,7 +20,7 @@ async function startServer() {
         console.log('Connected to MongoDB');
 
         app.listen(process.env.PORT,'0.0.0.0', () => {
-            console.log(`Server is running on http://0.0.0.0:${process.env.PORT}`);
+            console.log(`Server is running`);
         });
     } catch (error) {z
         console.log('Error starting server:', error);
