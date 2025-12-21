@@ -1,15 +1,13 @@
 const Groq = require('groq-sdk');
-const Advisor = require('../models/Advisor');
+// const Advisor = require('../models/Advisor');
 require('dotenv').config();
 
 const client = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
-exports.getAIResponse = async ({ conversation, financialProfile, context, advisorId, message }) => {
-    const selectedAdvisor = await Advisor.findById(advisorId);
+exports.getAIResponse = async ({ conversation, financialProfile, context, message }) => {
 
     const instruction = `
     You are a certified financial advisor assistant.
-    Advisor personality: ${selectedAdvisor.description}
 
     Give clear, tailored, actionable advice (json array).
     Always include JSON block with:
@@ -63,10 +61,9 @@ exports.getAIResponse = async ({ conversation, financialProfile, context, adviso
     if (jsonRaw) {
         chatReply = aiMessage.split(/```json/i)[0].trim();
     }
-    console.log(chatReply, parsedJson, advisorId);
+    console.log(chatReply, parsedJson);
     return {
         reply: chatReply,
-        structured: parsedJson,
-        advisor: selectedAdvisor.name
+        structured: parsedJson
     };
 };

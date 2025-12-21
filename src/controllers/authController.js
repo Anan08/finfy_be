@@ -20,7 +20,7 @@ exports.login = async (req, res) => {
         
         if (!isMatch) return res.status(400).json({message: 'Invalid credentials'});
         await createProfileIfNotExists(user._id);
-        const token = jwt.sign({id : user._id}, process.env.JWT_SECRET, {expiresIn : '30d'});
+        const token = jwt.sign({id : user._id}, process.env.JWT_SECRET, {expiresIn : '7d'});
 
         return res.status(200).json({message: 'Login successful', token : token});
     
@@ -102,3 +102,16 @@ exports.changePassword = async (req, res) => {
         return res.status(400).json({error : error.message})
     }
 }
+
+// exports.isTokenActive = async (req, res) => {
+//     try {
+//         const token = req.headers.authorization && req.headers.authorization.split(' ')[1];
+//         if (!token) {
+//             return res.status(200).json({ active: false });
+//         }
+//         jwt.verify(token, process.env.JWT_SECRET);
+//         return res.status(200).json({ active: true });
+//     } catch (error) {
+//         return res.status(200).json({ active: false });
+//     }
+// }

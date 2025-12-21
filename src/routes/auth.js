@@ -7,6 +7,7 @@ router.post('/login', authController.login);
 router.post('/register', authController.register);
 // router.get('/logout', authController.logout);
 router.get('/me', authenticate, authController.me);
+// router.get('/is-token-active', authController.isTokenActive);
 
 module.exports = router;
 
