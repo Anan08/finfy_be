@@ -16,11 +16,11 @@ exports.getProfileByUserId = async (req, res) => {
 
 exports.updateProfile = async (req, res) => {
     try {
-        const { job, age, goals, fullName } = req.body;
+        const { job, age, goals, fullName, emergencyFundTarget } = req.body;
         const userId = req.user.id;
         let profile = await Profile.findOne({ user: userId });
         if (!profile) {
-            profile = new Profile({ user: userId, job, age, goals, fullName });
+            profile = new Profile({ user: userId, job, age, goals, fullName, emergencyFundTarget });
         } else {
             if (job !== undefined) profile.job = job;
             if (age !== undefined) profile.age = age;
@@ -31,6 +31,7 @@ exports.updateProfile = async (req, res) => {
                 }
                 profile.goals = goals;
             };
+            if (emergencyFundTarget !== undefined) profile.emergencyFundTarget = emergencyFundTarget;
         }
         await profile.save();
         return res.status(200).json({ profile: profile });

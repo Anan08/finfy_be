@@ -12,7 +12,6 @@ exports.getAIResponse = async ({ conversation, financialProfile, context, messag
     Give clear, tailored, actionable advice (json array).
     Always include JSON block with:
     - recommendations (array)
-    - expected_savings_estimate (number)
     - risk_notes (string)
     - follow_up_questions (array)
     `;
