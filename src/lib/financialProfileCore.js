@@ -70,7 +70,7 @@ exports.buildFinancialProfile = async ({
     ratios: {
       debtRatio: safeRatio(debt, income).toFixed(2),
       investmentRatio: safeRatio(investments, income).toFixed(2),
-      savingsRatio: safeRatio(cashFlow, income).toFixed(2),
+      savingsRatio: safeRatio(savings, income).toFixed(2),
       livingCostRatio: safeRatio(livingCost, income).toFixed(2)
     },
     emergencyFund: {
