@@ -5,9 +5,8 @@ const { authenticate } = require('../lib/auth');
 
 router.post('/login', authController.login);
 router.post('/register', authController.register);
-// router.get('/logout', authController.logout);
 router.get('/me', authenticate, authController.me);
-// router.get('/is-token-active', authController.isTokenActive);
+router.put('/change-password', authenticate, authController.changePassword);
 
 module.exports = router;
 
