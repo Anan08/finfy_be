@@ -22,7 +22,7 @@ async function startServer() {
         app.listen(process.env.PORT,'0.0.0.0', () => {
             console.log(`Server is running`);
         });
-    } catch (error) {z
+    } catch (error) {
         console.log('Error starting server:', error);
         process.exit(1);
     }

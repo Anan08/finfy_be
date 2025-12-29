@@ -32,6 +32,7 @@ exports.login = async (req, res) => {
 exports.register = async (req, res) => {
   try {
     const { email, username, password } = req.body;
+    if (password.length < 8) return res.status(400).json({ message: 'Password must be at least 8 characters' });
 
     if (!email || !username || !password) {
       return res.status(400).json({ message: 'Please provide email, username and password' });
@@ -63,13 +64,6 @@ exports.register = async (req, res) => {
   }
 };
 
-// exports.logout = async (req, res) => {
-//     try {
-//         return res.clearCookie('token').json({message: 'Logged out successfully'});
-//     } catch (error) {
-//         return res.status(400).json({error : error.message})
-//     }
-// }
 
 exports.me = async (req, res) => {
     try {

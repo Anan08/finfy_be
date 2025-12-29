@@ -1,6 +1,7 @@
 const ChatMessage = require('../models/ChatMessage');
 const { getAIResponse } = require('../services/aiServices');
 const { getFinancialProfileData } = require('../lib/getFinancialProfile');
+const Profile = require('../models/Profile');
 
 exports.getChatHistory = async (req, res) => {
     try {
@@ -46,6 +47,8 @@ exports.sendMessage = async (req, res) => {
             message,
         });
 
+        const userProfile = await Profile.findOne({ user: userId });
+
         // GET CHAT HISTORY (INCLUDING USER MESSAGE ABOVE)
         const history = await ChatMessage
             .find({ userId })
@@ -64,11 +67,7 @@ exports.sendMessage = async (req, res) => {
             message,
             conversation: chatConversation,
             financialProfile,
-            context: {
-                "occupation" : "mahasiswa",
-                "age" : 22,
-                "financial_goals" : ["Savings for emergency fund", "Investing for retirement"]
-            }
+            context: {name: userProfile?.fullName || "User", age: userProfile?.age || "N/A", occupation: userProfile?.job || "N/A"}
         });
 
         const aiMessage = await ChatMessage.create({
