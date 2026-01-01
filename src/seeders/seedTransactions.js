@@ -12,7 +12,7 @@ async function seedTransactions() {
 
     const user = await User.findOne(); // use an existing user, or mock one
     if (!user) {
-      console.error('❌ No user found. Please register a user first.');
+      console.error('No user found. Please register a user first.');
       process.exit(1);
     }
 

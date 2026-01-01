@@ -2,7 +2,8 @@ const mongoose = require('mongoose');
 const Transaction = require('../models/Transaction');
 const Profile = require('../models/Profile');
 
-const LIVING_COST_CATEGORIES = ["Food", "Rent", "Utilities", "Transport"];
+const LIVING_COST_CATEGORIES = ["Food", "Rent", "Utilities", "Transport", "Health"];
+const LIFESTYLE_CATEGORIES = ["Entertainment", "Other"];
 
 const safeRatio = (a, b) => (b === 0 ? 0 : (a / b) * 100);
 
@@ -55,6 +56,10 @@ exports.buildFinancialProfile = async ({
   const livingCost = transactions
     .filter(t => LIVING_COST_CATEGORIES.includes(t._id.name))
     .reduce((acc, cur) => acc + cur.total, 0);
+  
+  const lifestyleCost = transactions
+    .filter(t => LIFESTYLE_CATEGORIES.includes(t._id.name))
+    .reduce((acc, cur) => acc + cur.total, 0);
 
   const cashFlow = income - expenses;
 
@@ -71,7 +76,8 @@ exports.buildFinancialProfile = async ({
       debtRatio: safeRatio(debt, income).toFixed(2),
       investmentRatio: safeRatio(investments, income).toFixed(2),
       savingsRatio: safeRatio(savings, income).toFixed(2),
-      livingCostRatio: safeRatio(livingCost, income).toFixed(2)
+      livingCostRatio: safeRatio(livingCost, income).toFixed(2),
+      lifestyleCostRatio: safeRatio(lifestyleCost, income).toFixed(2)
     },
     emergencyFund: {
       target: emergencyTarget,
