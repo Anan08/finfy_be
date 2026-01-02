@@ -94,7 +94,7 @@ exports.getAnalyticsInsight = async (req, res) => {
         You are a certified financial advisor assistant. 
         Give clear actionable advice, based on the user's financial data and goals. 
         Always include a JSON block with:
-        - clear analytics of the financial profile given atleast 6 (array of strings in indonesian language named "financialProfile")`;
+        - clear simple advice based on the financial profile given (array of strings in indonesian language named "financialProfile")`;
 
         const response = await client.chat.completions.create({
             model: 'llama-3.1-8b-instant',
