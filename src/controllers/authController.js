@@ -2,6 +2,8 @@ const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { createProfileIfNotExists } = require('../lib/profile');
+const crypto = require('crypto');
+const { sendVerificationEmail } = require('../lib/mailer');
 
 exports.login = async (req, res) => {
 
@@ -9,13 +11,12 @@ exports.login = async (req, res) => {
         return res.status(400).json({message: 'Please provide username and password'});
     }
 
-
     try {
         const { username, password } = req.body;
         const user = await User.findOne({username : username});
         
         if (!user) return res.status(400).json({message: 'Invalid credentials'});
-        
+        if (!user.isVerified) return res.status(403).json({message: 'Email not verified. Please verify your email before logging in.'});
         const isMatch = await bcrypt.compare(password, user.password);
         
         if (!isMatch) return res.status(400).json({message: 'Invalid credentials'});
@@ -32,11 +33,12 @@ exports.login = async (req, res) => {
 exports.register = async (req, res) => {
   try {
     const { email, username, password } = req.body;
-    if (password.length < 8) return res.status(400).json({ message: 'Password must be at least 8 characters' });
 
     if (!email || !username || !password) {
       return res.status(400).json({ message: 'Please provide email, username and password' });
     }
+
+    if (password.length < 8) return res.status(400).json({ message: 'Password must be at least 8 characters' });
 
     const isEmailUsed = await User.findOne({ email });
     if (isEmailUsed) {
@@ -52,13 +54,14 @@ exports.register = async (req, res) => {
       username,
       email,
       password: await bcrypt.hash(password, 10),
+      isVerified: false,
+      emailVerificationToken: crypto.randomBytes(32).toString('hex'),
+      verificationTokenExpiry: Date.now() + 24 * 60 * 60 * 1000, // 24 hours
     });
 
     await user.save();
-
-    await createProfileIfNotExists(user._id);
-
-    return res.status(201).json({ message: 'User registered successfully' });
+    await sendVerificationEmail(user.email, user.emailVerificationToken);
+    return res.status(201).json({ message: 'User registered. Please verify your email to activate your account.' });
   } catch (error) {
     return res.status(400).json({ error: error.message });
   }
@@ -127,6 +130,25 @@ exports.changePassword = async (req, res) => {
     });
   }
 };
+
+exports.verifyEmail = async (req, res) => {
+  try {
+    const { token } = req.query;
+
+    const user = await User.findOne ({ emailVerificationToken: token, verificationTokenExpiry: { $gt: Date.now() } });
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid or expired token' });
+    }
+    user.isVerified = true;
+    user.emailVerificationToken = null;
+    user.verificationTokenExpiry = null;
+    await user.save();
+    return res.status(200).json({ message: 'Email verified successfully' });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({error : error.message} )
+  }
+}
 
 
 // exports.isTokenActive = async (req, res) => {
