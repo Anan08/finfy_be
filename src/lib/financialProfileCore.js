@@ -53,6 +53,9 @@ exports.buildFinancialProfile = async ({
   const investments = sumByType("invest");
   const savings = sumByType("saving");
 
+  const realIncome = income + debt; // Debt as incoming fund
+  const totalOutflow = expenses + investments + savings;
+
   const livingCost = transactions
     .filter(t => LIVING_COST_CATEGORIES.includes(t._id.name))
     .reduce((acc, cur) => acc + cur.total, 0);
@@ -61,7 +64,8 @@ exports.buildFinancialProfile = async ({
     .filter(t => LIFESTYLE_CATEGORIES.includes(t._id.name))
     .reduce((acc, cur) => acc + cur.total, 0);
 
-  const cashFlow = income - expenses;
+  const cashFlow = realIncome - totalOutflow;
+  const operationalCashFlow = income - expenses;
 
   const profile = await Profile.findOne({ user: userId });
 
@@ -72,6 +76,9 @@ exports.buildFinancialProfile = async ({
     income,
     expenses,
     cashFlow,
+    operationalCashFlow,
+    debt,
+    investments,
     ratios: {
       debtRatio: safeRatio(debt, income).toFixed(2),
       investmentRatio: safeRatio(investments, income).toFixed(2),
