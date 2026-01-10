@@ -131,24 +131,77 @@ exports.changePassword = async (req, res) => {
   }
 };
 
+// exports.verifyEmail = async (req, res) => {
+//   try {
+//     const { token } = req.query;
+
+//     const user = await User.findOne ({ emailVerificationToken: token, verificationTokenExpiry: { $gt: Date.now() } });
+//     if (!user) {
+//       return res.status(400).json({ message: 'Invalid or expired token' });
+//     }
+//     user.isVerified = true;
+//     user.emailVerificationToken = null;
+//     user.verificationTokenExpiry = null;
+//     await user.save();
+//     return res.status(200).json({ message: 'Email verified successfully' });
+//   } catch (error) {
+//     console.log(error);
+//     return res.status(400).json({error : error.message} )
+//   }
+// }
+
 exports.verifyEmail = async (req, res) => {
   try {
     const { token } = req.query;
 
-    const user = await User.findOne ({ emailVerificationToken: token, verificationTokenExpiry: { $gt: Date.now() } });
+    const user = await User.findOne({
+      emailVerificationToken: token,
+      verificationTokenExpiry: { $gt: Date.now() }
+    });
+
     if (!user) {
-      return res.status(400).json({ message: 'Invalid or expired token' });
+      return res.status(400).send(`
+        <html>
+          <head>
+            <title>Email Verification Failed</title>
+            <style>
+              body { font-family: sans-serif; text-align: center; padding: 50px; }
+              .error { color: red; }
+            </style>
+          </head>
+          <body>
+            <h1 class="error">Verification Failed</h1>
+            <p>Token tidak valid atau sudah kedaluwarsa.</p>
+          </body>
+        </html>
+      `);
     }
+
     user.isVerified = true;
     user.emailVerificationToken = null;
     user.verificationTokenExpiry = null;
     await user.save();
-    return res.status(200).json({ message: 'Email verified successfully' });
+
+    return res.send(`
+      <html>
+        <head>
+          <title>Email Activated</title>
+          <style>
+            body { font-family: sans-serif; text-align: center; padding: 50px; }
+            .success { color: green; }
+            a { display: inline-block; margin-top: 20px; }
+          </style>
+        </head>
+        <body>
+          <h1 class="success">Email Berhasil Diverifikasi</h1>
+          <p>Akun kamu sudah aktif. Silakan login.</p>
+        </body>
+      </html>
+    `);
   } catch (error) {
-    console.log(error);
-    return res.status(400).json({error : error.message} )
+    return res.status(500).send('Something went wrong');
   }
-}
+};
 
 
 // exports.isTokenActive = async (req, res) => {

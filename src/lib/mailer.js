@@ -1,7 +1,7 @@
 const nodemailer = require('nodemailer');
 
-const isDev = true
-const url = isDev ? 'http://192.168.1.105:5050' : process.env.FRONTEND_URL;
+const isDev = process.env.NODE_ENV === 'development';
+const url = isDev ? 'http://192.168.1.101:5050' : process.env.BACKEND_URL;
 
 const transporter = nodemailer.createTransport({
     host: process.env.MAIL_HOST,
