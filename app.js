@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 require('dotenv').config();
 const cors = require('cors');
-const routes = require('./src/routes');
+const apiRoutes = require('./src/routes');
 
 app.use(cors({
     origin : "*"
@@ -12,7 +12,7 @@ app.use(cors({
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(routes);
+app.use('/api', apiRoutes);
 
 async function startServer() {
     try {

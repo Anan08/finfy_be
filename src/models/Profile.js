@@ -23,10 +23,6 @@ const profileSchema = new mongoose.Schema({
     emergencyFundTarget : {
         type : Number,
         default : 0
-    },
-    goals : {
-        type : [String],
-        default : []
     }
 }, {
     timestamps : true
