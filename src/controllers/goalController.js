@@ -1,4 +1,5 @@
 const Goal = require('../models/Goal');
+const GoalTransaction = require('../models/GoalTransaction');
 
 exports.createGoal = async (req, res) => {
     try {
@@ -58,3 +59,28 @@ exports.deleteGoal = async (req, res) => {
         res.status(500).json({ message: 'Server Error', error });
     }
 };
+
+exports.addNewTransaction = async (req, res) => {
+    try {
+        const { amount, transactionType } = req.body;
+        const goalId = req.params.goalId;
+        const goal = await Goal.findById(goalId);
+        if (!goal) {
+            return res.status(404).json({ message: 'Goal not found' });
+        }
+        if (goal.userId.toString() !== req.user.id) {
+            return res.status(403).json({ message: 'Forbidden' });
+        }
+        goal.currentAmount += amount;
+        await goal.save();
+        const newTransaction = new GoalTransaction({
+            goalId,
+            amount,
+            transactionType: transactionType || 'add'
+        });
+        await newTransaction.save();
+        res.status(200).json({message : 'Amount added successfully', goal});
+    } catch (error) {
+        res.status(500).json({ message: 'Server Error', error });
+    }
+}

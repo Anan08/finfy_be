@@ -14,6 +14,7 @@ const categoryList = [
     { name: 'Investment', categoryType: 'invest', description: "Money for Investment"},
     { name: 'Saving', categoryType: 'saving', description: "Money for Saving"},
     { name : 'Debt', categoryType: 'debt', description: "Debt Needs to be paid"},
+    { name  : 'Debt Payment', categoryType : 'debt-payment', description : "Payments towards Debt"}
 ];
 
 async function seedCategories() {
