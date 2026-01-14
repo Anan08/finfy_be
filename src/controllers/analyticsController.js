@@ -76,25 +76,68 @@ exports.getAnalyticsInsight = async (req, res) => {
 
         const isSameDay = insight.date.toDateString() === now.toDateString();
 
-        // Limit attempts
-        if (isSameDay && insight.attempts >= 2) {
-            return res.status(429).json({
-                message: "Maximum attempts reached for today. Try again tomorrow."
-            });
-        }
-
+        
         // If new day, reset attempts
         if (!isSameDay) {
             insight.attempts = 0;
         }
 
+        
+        // // Limit attempts        
+        // if (isSameDay && insight.attempts >= 2) {
+        //     return res.status(429).json({
+        //         message: "Maximum attempts reached for today. Try again tomorrow."
+        //     });
+        // }
+
         const financialProfile = await getFinancialProfileData(req.user.id);
 
         const instruction = `
         You are a certified financial advisor assistant. 
-        Give clear actionable advice, based on the user's financial data and goals. 
+        Give clear actionable advice, based on the user's financial data and goals. all in indonesian language.
+        note all data provided is not set in a specific timeframe unless specified, so you dont need to include word monthly or the similar words. 
         Always include a JSON block with:
-        - clear simple advice based on the financial profile given (array of strings in indonesian language named "financialProfile")`;
+        - a recap of user cashflow based on the financial ratios given named "recap", with rules:
+            - if savings rate is below 20%, mention need to save more
+            - if debt-to-income ratio is above 20%, mention need to reduce debt
+            - if emergency fund months is below 3, mention need to build emergency fund
+            - if investment rate is below 20%, mention need to invest more
+            - if all ratios are healthy, congratulate the user
+            - provide suggestions for improvement based on the ratios
+            - if condition of the recap is positive, label condition as "good", else "normal" or "bad"
+            - recap shouldn't encourage unhealthy financial behavior such as overspending or excessive risk-taking or encouraging to have debt
+        - an array named "insight" containing:
+            - key: "insight" - concise summary of the user's financial situation based on the financial profile given, with rules:
+                - insights should be specific and data-driven
+                - insights should cover spending habits, saving patterns, debt levels, and investment behavior
+                - insights should identify both strengths and areas for improvement
+                - insights shouldn't be encouraging unhealthy financial behavior such as overspending or excessive risk-taking
+                - insights should be personalized based on user's financial goals if there's none given, assume the user wants to improve overall financial health
+                - insights should not exceed 3 items
+                - insights should not repeat the recap
+                - insights should be in indonesian language
+                - insights should provide value beyond the recap
+                - insights should be actionable
+                - insights should be simple and easy to understand no technical terms and no need to explain financial terms also dont use so much words
+            - key: "advice"
+        - clear simple advice based on the financial profile given named "advice", with rules:
+            - advice should be practical and easy to implement
+            - advice should cover budgeting, saving, debt management, and investing
+            - advice should be personalized based on user's financial goals
+        Respond in the following JSON format:
+        {
+            "recap": {
+                "recap": "...",
+                "condition": "good/normal/bad"
+            },
+            "insight": [
+                {
+                    "insight": "...",
+                    "advice": "..."
+                }
+            ],
+            "advice": "..."
+        }`;
 
         const response = await client.chat.completions.create({
             model: 'llama-3.1-8b-instant',
@@ -102,7 +145,7 @@ exports.getAnalyticsInsight = async (req, res) => {
                 { role: 'system', content: instruction },
                 { role: 'user', content: JSON.stringify(financialProfile, null, 2) }
             ],
-            max_tokens: 700,
+            max_tokens: 1000,
             temperature: 0.2
         });
 
@@ -121,8 +164,7 @@ exports.getAnalyticsInsight = async (req, res) => {
 
         res.json({
             message: "Analytics insights retrieved successfully",
-            insights: structured.financialProfile,
-            attempts : insight.attempts
+            structured
         });
 
     } catch (error) {
@@ -239,7 +281,7 @@ exports.getSavedInsights = async (req, res) => {
         const userId = req.user.id;
         let insights = await Insight.find({ userId });
         if (!insights) {
-            await Insight.create({userId, date: new Date(), structured: {financialProfile: []}, attempts: 0});
+            await Insight.create({userId, date: new Date(), structured: {}, attempts: 0});
             res.status(200).json({ message: "No insights found. Initialized new insight.", insights: [] });
         }
         if (insights.attempts >= 2 && insights.date.toDateString() !== now.toDateString()) {

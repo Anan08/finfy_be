@@ -11,10 +11,8 @@ const insightSchema = new mongoose.Schema({
     required: true
   },
   structured: {
-    financialProfile: {
-      type: [String],
-      default: []
-    }
+    type: Object,
+    required: true
   },
   attempts: {
     type: Number,
