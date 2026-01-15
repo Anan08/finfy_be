@@ -100,8 +100,7 @@ exports.buildFinancialProfile = async ({
     income,
     expenses,
     cashFlow,
-    operationalCashFlow,
-    debt,
+    debt: realDebt,
     investments,
     ratios: {
       debtRatio: safeRatio(realDebt, income).toFixed(2),
