@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { createProfileIfNotExists } = require('../lib/profile');
 const crypto = require('crypto');
-const { sendVerificationEmail } = require('../lib/mailer');
+const { sendVerificationEmail, sendResetPasswordEmail } = require('../lib/mailer');
 
 exports.login = async (req, res) => {
 
@@ -56,7 +56,7 @@ exports.register = async (req, res) => {
       password: await bcrypt.hash(password, 10),
       isVerified: false,
       emailVerificationToken: crypto.randomBytes(32).toString('hex'),
-      verificationTokenExpiry: Date.now() + 24 * 60 * 60 * 1000, // 24 hours
+      // verificationTokenExpiry: Date.now() + 24 * 60 * 60 * 1000 // 24 hours
     });
 
     await user.save();
@@ -156,7 +156,7 @@ exports.verifyEmail = async (req, res) => {
 
     const user = await User.findOne({
       emailVerificationToken: token,
-      verificationTokenExpiry: { $gt: Date.now() }
+      // verificationTokenExpiry: { $gt: Date.now() }
     });
 
     if (!user) {
@@ -179,7 +179,7 @@ exports.verifyEmail = async (req, res) => {
 
     user.isVerified = true;
     user.emailVerificationToken = null;
-    user.verificationTokenExpiry = null;
+    // user.verificationTokenExpiry = null;
     await user.save();
 
     return res.send(`
@@ -216,3 +216,123 @@ exports.verifyEmail = async (req, res) => {
 //         return res.status(200).json({ active: false });
 //     }
 // }
+
+exports.forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ message: 'Email is required' });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(200).json({
+        message: 'If this email exists, a reset link has been sent'
+      });
+    }
+
+    const token = crypto.randomBytes(32).toString('hex');
+
+    user.resetPasswordToken = token;
+    await user.save();
+
+    await sendResetPasswordEmail(user.email, token);
+
+    return res.status(200).json({
+      message: 'If this email exists, a reset link has been sent'
+    });
+
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+exports.resetPassword = async (req, res) => {
+  try {
+    const { token } = req.query;
+    const { newPassword, confirmPassword } = req.body;
+
+    if (!token) {
+      return res.status(400).send('<h1>Token is required</h1>');
+    }
+
+    if (!newPassword || !confirmPassword) {
+      return res.status(400).send('<h1>All fields are required</h1>');
+    }
+
+    if (newPassword !== confirmPassword) {
+      return res.status(400).send('<h1>Passwords do not match</h1>');
+    }
+
+    if (newPassword.length < 8) {
+      return res.status(400).send('<h1>Password must be at least 8 characters</h1>');
+    }
+
+    const user = await User.findOne({ resetPasswordToken: token });
+
+    if (!user) {
+      return res.status(400).send('<h1>Invalid or expired token</h1>');
+    }
+
+    user.password = await bcrypt.hash(newPassword, 10);
+    user.resetPasswordToken = null;
+    await user.save();
+
+    // Return stylized HTML instead of JSON
+    return res.send(`
+      <html>
+        <head>
+          <title>Password Reset Successful</title>
+          <style>
+            body { font-family: sans-serif; text-align: center; padding: 50px; background-color: #f4f4f9; }
+            h1 { color: green; }
+            p { margin-top: 20px; }
+            a { display: inline-block; margin-top: 20px; padding: 10px 15px; background-color: #FFA811; color: white; text-decoration: none; border-radius: 8px; }
+          </style>
+        </head>
+        <body>
+          <h1>Password Reset Successful</h1>
+          <p>Your password has been updated. You can now log in with your new password.</p>
+        </body>
+      </html>
+    `);
+
+  } catch (error) {
+    return res.status(500).send('<h1>Something went wrong</h1>');
+  }
+};
+
+exports.showResetPasswordForm = async (req, res) => {
+  const { token } = req.query;
+
+  if (!token) {
+    return res.status(400).send('Token is required');
+  }
+
+  const user = await User.findOne({ resetPasswordToken: token });
+  if (!user) {
+    return res.status(400).send('Invalid or expired token');
+  }
+
+  return res.send(`
+    <html>
+      <head>
+        <title>Reset Password</title>
+        <style>
+          body { font-family: sans-serif; padding: 50px; text-align: center; }
+          input { margin: 5px 0; padding: 8px; width: 200px; }
+          button { padding: 8px 12px; }
+        </style>
+      </head>
+      <body>
+        <h1>Reset Your Password</h1>
+        <form method="POST" action="/api/auth/reset-password?token=${token}">
+          <input type="password" name="newPassword" placeholder="New Password" required /><br/>
+          <input type="password" name="confirmPassword" placeholder="Confirm Password" required /><br/>
+          <button type="submit">Reset Password</button>
+        </form>
+      </body>
+    </html>
+  `);
+};

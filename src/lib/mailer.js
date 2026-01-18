@@ -1,7 +1,7 @@
 const nodemailer = require('nodemailer');
 
 const isDev = process.env.NODE_ENV === 'development';
-const url = isDev ? 'http://192.168.1.101:5050' : process.env.BACKEND_URL;
+const url = isDev ? 'http://192.168.1.107:5050/api' : process.env.BACKEND_URL;
 
 const transporter = nodemailer.createTransport({
     host: process.env.MAIL_HOST,
@@ -28,3 +28,18 @@ exports.sendVerificationEmail = async (to, token) => {
         `
     });
 }
+
+exports.sendResetPasswordEmail = async (to, token) => {
+  const resetUrl = `${url}/auth/reset-password?token=${token}`;
+
+  await transporter.sendMail({
+    from: `"No Reply" <${process.env.MAIL_FROM}>`,
+    to : to,
+    subject: 'Reset your password',
+    html: `
+      <h1>Password Reset</h1>
+      <p>Click the link below to reset your password:</p>
+      <a href="${resetUrl}">Reset Password</a>
+    `
+  });
+};

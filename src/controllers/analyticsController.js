@@ -106,6 +106,7 @@ exports.getAnalyticsInsight = async (req, res) => {
             - provide suggestions for improvement based on the ratios
             - if condition of the recap is positive, label condition as "good", else "normal" or "bad"
             - recap shouldn't encourage unhealthy financial behavior such as overspending or excessive risk-taking or encouraging to have debt
+            - all data included isnt in a specific timeframe unless specified, so dont need to include word monthly or the similar words
         - an array named "insight" containing:
             - key: "insight" - concise summary of the user's financial situation based on the financial profile given, with rules:
                 - insights should be specific and data-driven
