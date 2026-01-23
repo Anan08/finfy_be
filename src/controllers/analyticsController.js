@@ -295,3 +295,75 @@ exports.getSavedInsights = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 }
+
+exports.getSpendingTimeline = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const range = req.query.range || '30d';
+
+    const now = new Date();
+    let startDate = null;
+
+    switch (range) {
+      case '7d':
+        startDate = new Date(now.setDate(now.getDate() - 6));
+        break;
+      case '30d':
+        startDate = new Date(now.setDate(now.getDate() - 29));
+        break;
+      case '60d':
+        startDate = new Date(now.setDate(now.getDate() - 59));
+        break;
+      case '1y':
+        startDate = new Date(now.setFullYear(now.getFullYear() - 1));
+        break;
+      case 'all':
+        startDate = null;
+        break;
+    }
+
+    const matchStage = {
+      userId: new mongoose.Types.ObjectId(userId),
+    };
+
+    if (startDate) {
+      matchStage.date = { $gte: startDate };
+    }
+
+    const data = await Transaction.aggregate([
+      { $match: matchStage },
+      {
+        $lookup: {
+          from: 'categories',
+          localField: 'category',
+          foreignField: '_id',
+          as: 'categoryInfo',
+        },
+      },
+      { $unwind: '$categoryInfo' },
+      { $match: { 'categoryInfo.categoryType': 'expense' } },
+      {
+        $group: {
+          _id: {
+            day: {
+              $dateToString: { format: '%Y-%m-%d', date: '$date' },
+            },
+          },
+          total: { $sum: '$amount' },
+        },
+      },
+      { $sort: { '_id.day': 1 } },
+    ]);
+
+    res.json({
+      range,
+      timeline: data.map(d => ({
+        date: d._id.day,
+        total: d.total,
+      })),
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: err.message });
+  }
+};

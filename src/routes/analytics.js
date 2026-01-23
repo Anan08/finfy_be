@@ -9,5 +9,6 @@ router.get('/financial-profile', authenticate, analyticsController.getFinancialP
 router.get('/spending-distribution', authenticate, analyticsController.getSpendingDistribution);
 router.get('/ai-insight', authenticate, analyticsController.getAnalyticsInsight)
 router.get('/saved-insights', authenticate, analyticsController.getSavedInsights);
+router.get('/spending/timeline', authenticate, analyticsController.getSpendingTimeline);
 
 module.exports = router;
