@@ -21,45 +21,86 @@ exports.getFinancialProfile = async (req, res) => {
 };
 
 exports.getSpendingDistribution = async (req, res) => {
-    try {
-        const userId = req.user.id;
+  try {
+    const userId = req.user.id;
 
-        const transactions = await Transaction
-            .find({ userId })
-            .populate('category');
+    const data = await Transaction.aggregate([
+      {
+        $match: {
+          userId: new mongoose.Types.ObjectId(userId),
+        },
+      },
+      {
+        $lookup: {
+          from: 'categories',
+          localField: 'category',
+          foreignField: '_id',
+          as: 'categoryInfo',
+        },
+      },
+      { $unwind: '$categoryInfo' },
+      {
+        $match: {
+          'categoryInfo.categoryType': 'expense',
+        },
+      },
+      {
+        $group: {
+          _id: '$categoryInfo.name',
+          totalAmount: { $sum: '$amount' },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          categories: {
+            $push: {
+              category: '$_id',
+              totalAmount: '$totalAmount',
+            },
+          },
+          grandTotal: { $sum: '$totalAmount' },
+        },
+      },
+      {
+        $unwind: '$categories',
+      },
+      {
+        $project: {
+          _id: 0,
+          category: '$categories.category',
+          totalAmount: '$categories.totalAmount',
+          percentage: {
+            $cond: [
+              { $eq: ['$grandTotal', 0] },
+              0,
+              {
+                $round: [
+                  {
+                    $multiply: [
+                      { $divide: ['$categories.totalAmount', '$grandTotal'] },
+                      100,
+                    ],
+                  },
+                  2,
+                ],
+              },
+            ],
+          },
+        },
+      },
+    ]);
 
-        const expenses = transactions.filter(
-            tx => tx.category.categoryType === 'expense'
-        );
-
-        let categoryMap = {};
-
-        for (let tx of expenses) {
-            const catName = tx.category.name;
-            if (!categoryMap[catName]) {
-                categoryMap[catName] = 0;
-            }
-            categoryMap[catName] += tx.amount;
-        }
-
-        const total = Object.values(categoryMap).reduce((a, b) => a + b, 0);
-
-        const result = Object.entries(categoryMap).map(([name, totalAmount]) => ({
-            category: name,
-            totalAmount,
-            percentage: total === 0 ? 0 : ((totalAmount / total) * 100).toFixed(2)
-        }));
-
-        res.json({
-            message: "Spending distribution retrieved",
-            distribution: result
-        });
-
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: error.message });
-    }
+    res.json({
+      message: 'Spending distribution retrieved',
+      distribution: data,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
 };
+
 
 
 
@@ -67,28 +108,30 @@ exports.getAnalyticsInsight = async (req, res) => {
     try {
         const userId = req.user.id;
 
-        const insight = await Insight.findOne({userId});
+        let insight = await Insight.findOne({userId});
         const now = new Date();
 
         if (!insight) {
-            await Insight.create({userId, date: now, structured: {financialProfile: []}, attempts: 0});
+            insight = await Insight.create({userId, date: now, structured: {financialProfile: []}, attempts: 0});
         };
+
 
         const isSameDay = insight.date.toDateString() === now.toDateString();
 
         
-        // If new day, reset attempts
-        if (!isSameDay) {
-            insight.attempts = 0;
-        }
+        // // If new day, reset attempts
+        // if (!isSameDay) {
+        //     insight.attempts = 0;
+        //     insight.date = now;
+        // }
 
         
-        // // Limit attempts        
-        // if (isSameDay && insight.attempts >= 2) {
-        //     return res.status(429).json({
-        //         message: "Maximum attempts reached for today. Try again tomorrow."
-        //     });
-        // }
+        // Limit attempts        
+        if (isSameDay && insight.attempts >= 2) {
+            return res.status(429).json({
+                message: "Maximum attempts reached for today. Try again tomorrow."
+            });
+        }
 
         const financialProfile = await getFinancialProfileData(req.user.id);
 
@@ -175,33 +218,6 @@ exports.getAnalyticsInsight = async (req, res) => {
     }
 }
 
-exports.getYearlySpending = async (req, res) => {
-    try {
-        const userId = req.user.id;
-        const transactions = await Transaction.find({ user: userId,
-            date: {
-                $gte: new Date(`${lastYear}-01-01`),
-            }
-         });
-
-        const yearlySpending = { [lastYear]: 0, [nowYear]: 0 };
-
-        transactions.forEach(txn => {
-            const year = txn.date.getFullYear();
-            if (year === lastYear || year === nowYear) {
-                yearlySpending[year] += txn.amount;
-            }
-        });
-
-        res.json({ message: "Yearly spending retrieved successfully", yearlySpending });
-
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: error.message });
-    }
-}
-
-
 exports.getThisMonthSpending = async (req,res) => {
     try {
         const userId = req.user.id;
@@ -280,7 +296,7 @@ exports.getSavedInsights = async (req, res) => {
     try {
         const now = new Date();
         const userId = req.user.id;
-        let insights = await Insight.find({ userId });
+        let insights = await Insight.findOne({ userId });
         if (!insights) {
             await Insight.create({userId, date: new Date(), structured: {}, attempts: 0});
             res.status(200).json({ message: "No insights found. Initialized new insight.", insights: [] });
@@ -289,7 +305,7 @@ exports.getSavedInsights = async (req, res) => {
             insights.attempts = 0;
             await insights.save();
         }   
-        res.status(200).json({ message: "Insights retrieved successfully", insights, attempts : insights?.[0]?.attempts ?? 0 });
+        res.status(200).json({ message: "Insights retrieved successfully", insights, attempts : insights?.attempts ?? 0 });
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: error.message });
