@@ -70,7 +70,7 @@ exports.buildFinancialProfile = async ({
   const debtPayments = sumByType("debt-payment");
 
   const realIncome = income + debt; // Debt as incoming fund
-  const totalOutflow = expenses + investments + savings + debtPayments;
+  // const totalOutflow = expenses + investments + savings + debtPayments;
 
   const realDebt = debt - debtPayments;
 
@@ -87,7 +87,7 @@ exports.buildFinancialProfile = async ({
 
 
   const cashFlow = realIncome - totalOutflowWithGoals;
-  const operationalCashFlow = income - expenses;
+  // const operationalCashFlow = income - expenses;
 
   const profile = await Profile.findOne({ user: userId });
 
