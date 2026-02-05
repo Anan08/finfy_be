@@ -1,6 +1,7 @@
 const Transaction = require('../models/Transaction');
 const User = require('../models/User');
 const Category = require('../models/Category');
+const Budget = require('../models/Budget');
 
 exports.addTransaction = async (req, res) => {
     try {
@@ -118,5 +119,22 @@ exports.getTransactionPerPage = async (req, res) => {
     } catch (error) {
         console.log(error);
         return res.status(400).json({ error: error.message });
+    }
+}
+
+exports.autoBudgeting = async (req, res) => {
+    try {
+        const { categoryId, amount, period } = req.body;
+        const budget = new Budget({
+            userId : req.user.id,
+            categoryId,
+            amount,
+            period
+        });
+        await budget.save();
+        return res.status(201).json({message : 'Budget created successfully', budget : budget});
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json({error : error.message})
     }
 }

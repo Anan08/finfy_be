@@ -14,15 +14,21 @@ const categoryList = [
     { name: 'Investment', categoryType: 'invest', description: "Money for Investment"},
     { name: 'Saving', categoryType: 'saving', description: "Money for Saving"},
     { name : 'Debt', categoryType: 'debt', description: "Debt Needs to be paid"},
-    { name  : 'Debt Payment', categoryType : 'debt-payment', description : "Payments towards Debt"}
+    { name  : 'Debt Payment', categoryType : 'debt-payment', description : "Payments towards Debt"},
+    { name : "honor", categoryType : "income", description : "Income from honors and awards" },
+    { name : "freelance", categoryType : "income", description : "Income from freelance work" },
+    { name : "gift", categoryType : "income", description : "Income from gifts received" },
+    { name : "bonus", categoryType : "income", description : "Income from bonuses" },
+    { name : "interest", categoryType : "income", description : "Income from interest earned" },
+    { name : "education", categoryType : "expense", description : "Expenses related to education" },
+    { name : "travel", categoryType : "expense", description : "Expenses related to travel" },
+    { name : "clothing", categoryType : "expense", description : "Expenses related to clothing" },
 ];
 
 async function seedCategories() {
     try {
         await mongoose.connect(process.env.MONGODB_URL);
-        
-        await Category.deleteMany({});
-        console.log('All categories deleted');
+        console.log('Connected to MongoDB');
 
         // Add defaults
         for (const categoryData of categoryList) {
