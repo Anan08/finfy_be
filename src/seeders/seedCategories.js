@@ -15,15 +15,20 @@ const categoryList = [
     { name: 'Saving', categoryType: 'saving', description: "Money for Saving"},
     { name : 'Debt', categoryType: 'debt', description: "Debt Needs to be paid"},
     { name  : 'Debt Payment', categoryType : 'debt-payment', description : "Payments towards Debt"},
-    { name : "honor", categoryType : "income", description : "Income from honors and awards" },
-    { name : "freelance", categoryType : "income", description : "Income from freelance work" },
-    { name : "gift", categoryType : "income", description : "Income from gifts received" },
-    { name : "bonus", categoryType : "income", description : "Income from bonuses" },
-    { name : "interest", categoryType : "income", description : "Income from interest earned" },
-    { name : "education", categoryType : "expense", description : "Expenses related to education" },
-    { name : "travel", categoryType : "expense", description : "Expenses related to travel" },
-    { name : "clothing", categoryType : "expense", description : "Expenses related to clothing" },
+//     { name : "honor", categoryType : "income", description : "Income from honors and awards" },
+//     { name : "freelance", categoryType : "income", description : "Income from freelance work" },
+//     { name : "gift", categoryType : "income", description : "Income from gifts received" },
+//     { name : "bonus", categoryType : "income", description : "Income from bonuses" },
+//     { name : "interest", categoryType : "income", description : "Income from interest earned" },
+//     { name : "education", categoryType : "expense", description : "Expenses related to education" },
+//     { name : "travel", categoryType : "expense", description : "Expenses related to travel" },
+//     { name : "clothing", categoryType : "expense", description : "Expenses related to clothing" },
+    { name: 'Other Income', categoryType: 'income', description: 'Other sources of income' },
 ];
+
+const remove = [
+    "travel", "clothing", "honor", "freelance", "gift", "bonus", "interest",
+]
 
 async function seedCategories() {
     try {
@@ -33,7 +38,11 @@ async function seedCategories() {
         // Add defaults
         for (const categoryData of categoryList) {
             const existingCategory = await Category.findOne({ name: categoryData.name });
-            if (!existingCategory) {
+            const remove = remove.includes(categoryData.name.toLowerCase());
+            if (remove) {
+                await Category.deleteOne({ name: categoryData.name });
+                console.log(`Removed category: ${categoryData.name}`);
+            } else if (!existingCategory) {
                 const category = new Category(categoryData);
                 await category.save();
                 console.log(`Added category: ${categoryData.name}`);
