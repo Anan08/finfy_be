@@ -7,11 +7,6 @@ const categorySchema = new mongoose.Schema({
         unique : true,
         trim : true 
     },
-    categoryType : {
-        type : String,
-        enum : ['income', 'expense', 'debt', 'invest', 'saving', 'debt-payment'],
-        required : true
-    },
     description : {
         type : String, 
         default : ''

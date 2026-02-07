@@ -1,11 +1,11 @@
 const Transaction = require('../models/Transaction');
 const User = require('../models/User');
 const Category = require('../models/Category');
-const Budget = require('../models/Budget');
+const TransactionType = require('../models/TransactionType');
 
 exports.addTransaction = async (req, res) => {
     try {
-        const { description, amount, category } = req.body;
+        const { description, amount, category, transactionType } = req.body;
         const { date } = req.query;
 
         const dateOfTransaction = date ? new Date(date) : new Date();
@@ -24,6 +24,10 @@ exports.addTransaction = async (req, res) => {
             _id : category
         })
 
+        const transactionTypeExists = await TransactionType.findOne({
+            _id : transactionType
+        })
+
         if (!categoryExists) {
             return res.status(400).json({message: 'Category not found'});
         }
@@ -31,7 +35,8 @@ exports.addTransaction = async (req, res) => {
         const transaction = new Transaction({
             ...req.body,
             date : dateOfTransaction,
-            categoryId : categoryExists._id,
+            category : categoryExists._id,
+            type : transactionTypeExists._id,
             userId : req.user.id
         })
 
@@ -48,8 +53,8 @@ exports.getTransactions = async (req, res) => {
     try {
         const transactions = await Transaction.find({ userId: req.user.id })
             .populate("category", "name categoryType")
-            .sort({ createdAt: -1 });
-
+            .populate("type", "name")
+            .sort({ date: -1 });
         return res.status(200).json({ transactions });
     } catch (error) {
         console.log(error);
@@ -104,6 +109,8 @@ exports.getTransactionPerPage = async (req, res) => {
         const skip = (page - 1) * limit;
 
         const transactions = await Transaction.find({ userId: req.user.id })
+            .populate("category", "name categoryType")
+            .populate("type", "name")
             .sort({ date: -1 })
             .skip(skip)
             .limit(limit);
@@ -119,22 +126,5 @@ exports.getTransactionPerPage = async (req, res) => {
     } catch (error) {
         console.log(error);
         return res.status(400).json({ error: error.message });
-    }
-}
-
-exports.autoBudgeting = async (req, res) => {
-    try {
-        const { categoryId, amount, period } = req.body;
-        const budget = new Budget({
-            userId : req.user.id,
-            categoryId,
-            amount,
-            period
-        });
-        await budget.save();
-        return res.status(201).json({message : 'Budget created successfully', budget : budget});
-    } catch (error) {
-        console.log(error);
-        return res.status(400).json({error : error.message})
     }
 }

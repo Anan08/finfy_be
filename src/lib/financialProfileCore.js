@@ -21,105 +21,94 @@ exports.buildFinancialProfile = async ({
     matchStage.date = { $gte: startDate, $lte: endDate };
   }
 
-  const transactions = await Transaction.aggregate([
+  const aggregated = await Transaction.aggregate([
     { $match: matchStage },
+
     {
       $lookup: {
         from: "categories",
         localField: "category",
         foreignField: "_id",
-        as: "categoryInfo"
+        as: "category"
       }
     },
-    { $unwind: "$categoryInfo" },
+    { $unwind: "$category" },
+
+    {
+      $lookup: {
+        from: "transactiontypes",
+        localField: "type",
+        foreignField: "_id",
+        as: "type"
+      }
+    },
+    { $unwind: "$type" },
+
     {
       $group: {
         _id: {
-          name: "$categoryInfo.name",
-          type: "$categoryInfo.categoryType"
+          type: "$type.name",          // Income | Outcome
+          category: "$category.name"   // Food, Salary, Investment, etc
         },
         total: { $sum: "$amount" }
       }
     }
   ]);
 
-  const goals = await Goal.find({ userId });
-
-  const goalOutcomes = goals.map(goal => {
-    const progress = goal.targetAmount === 0 ? 0 : (goal.currentAmount / goal.targetAmount) * 100;
-    return {
-      title: goal.title,
-      targetAmount: goal.targetAmount,
-      currentAmount: goal.currentAmount,
-      progress: progress.toFixed(2)
-    };
-  });
-
-  const totalGoalOutcome = goalOutcomes.reduce((acc, goal) => acc + parseFloat(goal.currentAmount), 0);
-
-  const sumByType = (type) =>
-    transactions
-      .filter(t => t._id.type === type)
+  const sumBy = (type, categories = null) =>
+    aggregated
+      .filter(t =>
+        t._id.type === type &&
+        (!categories || categories.includes(t._id.category))
+      )
       .reduce((acc, cur) => acc + cur.total, 0);
 
-  const income = sumByType("income");
-  const expenses = sumByType("expense");
-  const debt = sumByType("debt");
-  const investments = sumByType("invest");
-  const savings = sumByType("saving");
-  const debtPayments = sumByType("debt-payment");
+  // Core totals
+  const income = sumBy("Income");
+  const outcome = sumBy("Outcome");
 
-  const realIncome = income + debt; // Debt as incoming fund
-  // const totalOutflow = expenses + investments + savings + debtPayments;
+  // Category-based breakdowns
+  const savings = sumBy("Outcome", ["Saving"]) - sumBy("Income", ["Saving"]);
+  const investments = sumBy("Outcome", ["Investment"]);
+  const debt = sumBy("Outcome", ["Debt"]);
 
-  const realDebt = debt - debtPayments;
+  const livingCost = sumBy("Outcome", LIVING_COST_CATEGORIES);
+  const lifestyleCost = sumBy("Outcome", LIFESTYLE_CATEGORIES);
 
-  const livingCost = transactions
-    .filter(t => LIVING_COST_CATEGORIES.includes(t._id.name))
-    .reduce((acc, cur) => acc + cur.total, 0);
-  
-  const lifestyleCost = transactions
-    .filter(t => LIFESTYLE_CATEGORIES.includes(t._id.name))
-    .reduce((acc, cur) => acc + cur.total, 0);
-    
-  //goal outcomes also added to outflow to reflect money allocated to goals
-  const totalOutflowWithGoals = expenses + investments + savings + debtPayments + totalGoalOutcome;
+  // Goals
+  const goals = await Goal.find({ userId });
+  const totalGoalOutcome = goals.reduce(
+    (acc, g) => acc + g.currentAmount,
+    0
+  );
 
-
-  const cashFlow = realIncome - totalOutflowWithGoals;
-  // const operationalCashFlow = income - expenses;
+  const cashFlow = income - (outcome + totalGoalOutcome);
 
   const profile = await Profile.findOne({ user: userId });
-
   const emergencyTarget = profile?.emergencyFundTarget || 0;
-  const emergencyCurrent = savings;
 
-  
-  
   return {
     income,
-    expenses,
+    expenses: outcome,
     cashFlow,
-    debt: realDebt,
+    savings,
     investments,
+    debt,
+    totalGoalOutcome,
     ratios: {
-      debtRatio: safeRatio(realDebt, income).toFixed(2),
-      investmentRatio: safeRatio(investments, income).toFixed(2),
       savingsRatio: safeRatio(savings, income).toFixed(2),
+      investmentRatio: safeRatio(investments, income).toFixed(2),
+      debtRatio: safeRatio(debt, income).toFixed(2),
       livingCostRatio: safeRatio(livingCost, income).toFixed(2),
       lifestyleCostRatio: safeRatio(lifestyleCost, income).toFixed(2)
     },
     emergencyFund: {
       target: emergencyTarget,
-      current: emergencyCurrent,
+      current: savings,
       progress:
         emergencyTarget === 0
           ? 0
-          : safeRatio(emergencyCurrent, emergencyTarget).toFixed(2),
-      recommendation: {
-        min: income * 3,
-        max: income * 6
-      }
+          : safeRatio(savings, emergencyTarget).toFixed(2),
     }
   };
 };

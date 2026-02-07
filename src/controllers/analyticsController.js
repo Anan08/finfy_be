@@ -30,41 +30,61 @@ exports.getSpendingDistribution = async (req, res) => {
           userId: new mongoose.Types.ObjectId(userId),
         },
       },
+
+      // Join transaction type
+      {
+        $lookup: {
+          from: 'transactiontypes',
+          localField: 'type',
+          foreignField: '_id',
+          as: 'type',
+        },
+      },
+      { $unwind: '$type' },
+
+      // Only Outcome
+      {
+        $match: {
+          'type.name': 'Outcome',
+        },
+      },
+
+      // Join category
       {
         $lookup: {
           from: 'categories',
           localField: 'category',
           foreignField: '_id',
-          as: 'categoryInfo',
+          as: 'category',
         },
       },
-      { $unwind: '$categoryInfo' },
-      {
-        $match: {
-          'categoryInfo.categoryType': 'expense',
-        },
-      },
+      { $unwind: '$category' },
+
+      // Sum per category
       {
         $group: {
-          _id: '$categoryInfo.name',
+          _id: '$category.name',
           totalAmount: { $sum: '$amount' },
         },
       },
+
+      // Compute grand total
       {
         $group: {
           _id: null,
+          totalSpending: { $sum: '$totalAmount' },
           categories: {
             $push: {
               category: '$_id',
               totalAmount: '$totalAmount',
             },
           },
-          grandTotal: { $sum: '$totalAmount' },
         },
       },
-      {
-        $unwind: '$categories',
-      },
+
+      { $unwind: '$categories' },
+
+      // Final shape
       {
         $project: {
           _id: 0,
@@ -72,13 +92,18 @@ exports.getSpendingDistribution = async (req, res) => {
           totalAmount: '$categories.totalAmount',
           percentage: {
             $cond: [
-              { $eq: ['$grandTotal', 0] },
+              { $eq: ['$totalSpending', 0] },
               0,
               {
                 $round: [
                   {
                     $multiply: [
-                      { $divide: ['$categories.totalAmount', '$grandTotal'] },
+                      {
+                        $divide: [
+                          '$categories.totalAmount',
+                          '$totalSpending',
+                        ],
+                      },
                       100,
                     ],
                   },
@@ -118,14 +143,6 @@ exports.getAnalyticsInsight = async (req, res) => {
 
         const isSameDay = insight.date.toDateString() === now.toDateString();
 
-        
-        // // If new day, reset attempts
-        // if (!isSameDay) {
-        //     insight.attempts = 0;
-        //     insight.date = now;
-        // }
-
-        
         // Limit attempts        
         if (isSameDay && insight.attempts >= 2) {
             return res.status(429).json({
@@ -235,63 +252,6 @@ exports.getThisMonthSpending = async (req,res) => {
         res.status(500).json({ message: error.message });
     }
 }
-
-
-exports.MonthlyExpensesByCategory = async (req, res) => {
-    try {
-        const userId = req.user.id;
-        const { date } = req.query; 
-        const currentDate = date ? new Date(date) : new Date();
-
-        const thisMonth = currentDate.getMonth();
-        const thisYear = currentDate.getFullYear();
-
-        const startOfMonth = new Date(thisYear, thisMonth, 1);
-        const endOfMonth = new Date(thisYear, thisMonth + 1, 0, 23, 59, 59, 999);
-
-        const monthlyExpensesByCategory = await Transaction.aggregate([
-            {
-                $match: {
-                    userId: new mongoose.Types.ObjectId(userId),
-                    date: { $gte: startOfMonth, $lte: endOfMonth }
-                }
-            },
-            {
-                $lookup: {
-                    from: "categories",
-                    localField: "category",
-                    foreignField: "_id",
-                    as: "categoryInfo"
-                }
-            },
-            { $unwind: "$categoryInfo" },
-            { $match: { "categoryInfo.categoryType": "expense" } },
-            {
-                $group: {
-                    _id: "$categoryInfo.name",
-                    totalAmount: { $sum: "$amount" }
-                }
-            },
-            {
-                $project: {
-                    _id: 0,
-                    category: "$_id",
-                    totalAmount: 1
-                }
-            }
-        ]);
-
-        res.json({
-            message: `Expenses by category for ${thisMonth + 1}/${thisYear}`,
-            monthlyExpensesByCategory
-        });
-
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: error.message });
-    }
-};
-
 exports.getSavedInsights = async (req, res) => {
     try {
         const now = new Date();
@@ -350,14 +310,14 @@ exports.getSpendingTimeline = async (req, res) => {
       { $match: matchStage },
       {
         $lookup: {
-          from: 'categories',
-          localField: 'category',
+          from: 'transactiontypes',
+          localField: 'type',
           foreignField: '_id',
-          as: 'categoryInfo',
-        },
+          as: 'typeInfo',
+        }
       },
-      { $unwind: '$categoryInfo' },
-      { $match: { 'categoryInfo.categoryType': 'expense' } },
+      { $unwind: '$typeInfo' },
+      { $match: { 'typeInfo.name': 'Outcome' } },
       {
         $group: {
           _id: {
