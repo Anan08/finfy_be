@@ -3,11 +3,16 @@ const Category = require('../models/Category');
 const Insight = require('../models/Insight');
 const mongoose = require('mongoose');
 const Groq = require('groq-sdk');
+const { getFinancialProfileData } = require('../lib/getFinancialProfile');
 const {
   getSpendingDistributionData,
   getSpendingTimelineData,
   getTotalIncomeOutcome
 } = require('../services/analyticsServices');
+
+const client = new Groq({
+  apiKey: process.env.GROQ_API_KEY,
+});
 
 exports.getFinancialProfile = async (req, res) => {
   try {
