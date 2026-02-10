@@ -3,118 +3,27 @@ const Category = require('../models/Category');
 const Insight = require('../models/Insight');
 const mongoose = require('mongoose');
 const Groq = require('groq-sdk');
-const {getFinancialProfileData} = require('../lib/getFinancialProfile');
-
-const client = new Groq({
-    apiKey: process.env.GROQ_API_KEY,
-}); 
+const {
+  getSpendingDistributionData,
+  getSpendingTimelineData,
+  getTotalIncomeOutcome
+} = require('../services/analyticsServices');
 
 exports.getFinancialProfile = async (req, res) => {
-    try {
-        const userId = req.user.id;
-        const profile = await getFinancialProfileData(userId);
-        res.status(200).json({ message: "Financial profile retrieved successfully", profile });
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: error.message });
-    }   
+  try {
+    const userId = req.user.id;
+    const profile = await getFinancialProfileData(userId);
+    res.status(200).json({ message: "Financial profile retrieved successfully", profile });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
 };
 
 exports.getSpendingDistribution = async (req, res) => {
   try {
     const userId = req.user.id;
-
-    const data = await Transaction.aggregate([
-      {
-        $match: {
-          userId: new mongoose.Types.ObjectId(userId),
-        },
-      },
-
-      // Join transaction type
-      {
-        $lookup: {
-          from: 'transactiontypes',
-          localField: 'type',
-          foreignField: '_id',
-          as: 'type',
-        },
-      },
-      { $unwind: '$type' },
-
-      // Only Outcome
-      {
-        $match: {
-          'type.name': 'Outcome',
-        },
-      },
-
-      // Join category
-      {
-        $lookup: {
-          from: 'categories',
-          localField: 'category',
-          foreignField: '_id',
-          as: 'category',
-        },
-      },
-      { $unwind: '$category' },
-
-      // Sum per category
-      {
-        $group: {
-          _id: '$category.name',
-          totalAmount: { $sum: '$amount' },
-        },
-      },
-
-      // Compute grand total
-      {
-        $group: {
-          _id: null,
-          totalSpending: { $sum: '$totalAmount' },
-          categories: {
-            $push: {
-              category: '$_id',
-              totalAmount: '$totalAmount',
-            },
-          },
-        },
-      },
-
-      { $unwind: '$categories' },
-
-      // Final shape
-      {
-        $project: {
-          _id: 0,
-          category: '$categories.category',
-          totalAmount: '$categories.totalAmount',
-          percentage: {
-            $cond: [
-              { $eq: ['$totalSpending', 0] },
-              0,
-              {
-                $round: [
-                  {
-                    $multiply: [
-                      {
-                        $divide: [
-                          '$categories.totalAmount',
-                          '$totalSpending',
-                        ],
-                      },
-                      100,
-                    ],
-                  },
-                  2,
-                ],
-              },
-            ],
-          },
-        },
-      },
-    ]);
+    const data = await getSpendingDistributionData(userId);
 
     res.json({
       message: 'Spending distribution retrieved',
@@ -130,29 +39,29 @@ exports.getSpendingDistribution = async (req, res) => {
 
 
 exports.getAnalyticsInsight = async (req, res) => {
-    try {
-        const userId = req.user.id;
+  try {
+    const userId = req.user.id;
 
-        let insight = await Insight.findOne({userId});
-        const now = new Date();
+    let insight = await Insight.findOne({ userId });
+    const now = new Date();
 
-        if (!insight) {
-            insight = await Insight.create({userId, date: now, structured: {financialProfile: []}, attempts: 0});
-        };
+    if (!insight) {
+      insight = await Insight.create({ userId, date: now, structured: { financialProfile: [] }, attempts: 0 });
+    };
 
 
-        const isSameDay = insight.date.toDateString() === now.toDateString();
+    const isSameDay = insight.date.toDateString() === now.toDateString();
 
-        // Limit attempts        
-        if (isSameDay && insight.attempts >= 2) {
-            return res.status(429).json({
-                message: "Maximum attempts reached for today. Try again tomorrow."
-            });
-        }
+    // Limit attempts        
+    if (isSameDay && insight.attempts >= 2) {
+      return res.status(429).json({
+        message: "Maximum attempts reached for today. Try again tomorrow."
+      });
+    }
 
-        const financialProfile = await getFinancialProfileData(req.user.id);
+    const financialProfile = await getFinancialProfileData(req.user.id);
 
-        const instruction = `
+    const instruction = `
         You are a certified financial advisor assistant. 
         Give clear actionable advice, based on the user's financial data and goals. all in indonesian language.
         note all data provided is not set in a specific timeframe unless specified, so you dont need to include word monthly or the similar words. 
@@ -200,76 +109,76 @@ exports.getAnalyticsInsight = async (req, res) => {
             "advice": "..."
         }`;
 
-        const response = await client.chat.completions.create({
-            model: 'llama-3.1-8b-instant',
-            messages: [
-                { role: 'system', content: instruction },
-                { role: 'user', content: JSON.stringify(financialProfile, null, 2) }
-            ],
-            max_tokens: 1000,
-            temperature: 0.2
-        });
+    const response = await client.chat.completions.create({
+      model: 'llama-3.1-8b-instant',
+      messages: [
+        { role: 'system', content: instruction },
+        { role: 'user', content: JSON.stringify(financialProfile, null, 2) }
+      ],
+      max_tokens: 1000,
+      temperature: 0.2
+    });
 
-        const aiMessage = response.choices[0].message.content;
-        const jsonMatch = aiMessage.match(/\{[\s\S]*\}/);
-        const structured = jsonMatch ? JSON.parse(jsonMatch[0]) : null;
+    const aiMessage = response.choices[0].message.content;
+    const jsonMatch = aiMessage.match(/\{[\s\S]*\}/);
+    const structured = jsonMatch ? JSON.parse(jsonMatch[0]) : null;
 
-        console.log("AI Structured Response:", structured);
-        
-        insight.date = now;
-        insight.structured = structured;
-        insight.attempts += 1;
+    console.log("AI Structured Response:", structured);
 
-        await insight.save();
+    insight.date = now;
+    insight.structured = structured;
+    insight.attempts += 1;
+
+    await insight.save();
 
 
-        res.json({
-            message: "Analytics insights retrieved successfully",
-            structured
-        });
+    res.json({
+      message: "Analytics insights retrieved successfully",
+      structured
+    });
 
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: error.message });
-        
-    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+
+  }
 }
 
-exports.getThisMonthSpending = async (req,res) => {
-    try {
-        const userId = req.user.id;
-        const { date } = req.query; 
-        const currentDate = date ? new Date(date) : new Date();
-        const thisMonth = currentDate.getMonth();
-        const thisYear = currentDate.getFullYear();
-        const startOfMonth = new Date(thisYear, thisMonth, 1);
-        const endOfMonth = new Date(thisYear, thisMonth + 1, 0, 23, 59, 59, 999);
-        const transactions = await Transaction.find({ user: new mongoose.Types.ObjectId(userId), date: { $gte: startOfMonth, $lte: endOfMonth} });
-        const thisMonthSpending = transactions.reduce((total, txn) => total + txn.amount, 0);
-        res.json({ message: "This month spending retrieved successfully", thisMonthSpending });
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: error.message });
-    }
+exports.getThisMonthSpending = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { date } = req.query;
+    const currentDate = date ? new Date(date) : new Date();
+    const thisMonth = currentDate.getMonth();
+    const thisYear = currentDate.getFullYear();
+    const startOfMonth = new Date(thisYear, thisMonth, 1);
+    const endOfMonth = new Date(thisYear, thisMonth + 1, 0, 23, 59, 59, 999);
+    const transactions = await Transaction.find({ user: new mongoose.Types.ObjectId(userId), date: { $gte: startOfMonth, $lte: endOfMonth } });
+    const thisMonthSpending = transactions.reduce((total, txn) => total + txn.amount, 0);
+    res.json({ message: "This month spending retrieved successfully", thisMonthSpending });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
 }
 exports.getSavedInsights = async (req, res) => {
-    try {
-        const now = new Date();
-        const userId = req.user.id;
-        let insights = await Insight.findOne({ userId });
-        if (!insights) {
-            await Insight.create({userId, date: new Date(), structured: {}, attempts: 0});
-            res.status(200).json({ message: "No insights found. Initialized new insight.", insights: [] });
-        }
-        if (insights.attempts >= 2 && insights.date.toDateString() !== now.toDateString()) {
-            insights.attempts = 0;
-            await insights.save();
-        }   
-        res.status(200).json({ message: "Insights retrieved successfully", insights, attempts : insights?.attempts ?? 0 });
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: error.message });
+  try {
+    const now = new Date();
+    const userId = req.user.id;
+    let insights = await Insight.findOne({ userId });
+    if (!insights) {
+      await Insight.create({ userId, date: new Date(), structured: {}, attempts: 0 });
+      res.status(200).json({ message: "No insights found. Initialized new insight.", insights: [] });
     }
+    if (insights.attempts >= 2 && insights.date.toDateString() !== now.toDateString()) {
+      insights.attempts = 0;
+      await insights.save();
+    }
+    res.status(200).json({ message: "Insights retrieved successfully", insights, attempts: insights?.attempts ?? 0 });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: error.message });
+  }
 }
 
 exports.getSpendingTimeline = async (req, res) => {
@@ -277,66 +186,11 @@ exports.getSpendingTimeline = async (req, res) => {
     const userId = req.user.id;
     const range = req.query.range || '30d';
 
-    const now = new Date();
-    let startDate = null;
-
-    switch (range) {
-      case '7d':
-        startDate = new Date(now.setDate(now.getDate() - 6));
-        break;
-      case '30d':
-        startDate = new Date(now.setDate(now.getDate() - 29));
-        break;
-      case '60d':
-        startDate = new Date(now.setDate(now.getDate() - 59));
-        break;
-      case '1y':
-        startDate = new Date(now.setFullYear(now.getFullYear() - 1));
-        break;
-      case 'all':
-        startDate = null;
-        break;
-    }
-
-    const matchStage = {
-      userId: new mongoose.Types.ObjectId(userId),
-    };
-
-    if (startDate) {
-      matchStage.date = { $gte: startDate };
-    }
-
-    const data = await Transaction.aggregate([
-      { $match: matchStage },
-      {
-        $lookup: {
-          from: 'transactiontypes',
-          localField: 'type',
-          foreignField: '_id',
-          as: 'typeInfo',
-        }
-      },
-      { $unwind: '$typeInfo' },
-      { $match: { 'typeInfo.name': 'Outcome' } },
-      {
-        $group: {
-          _id: {
-            day: {
-              $dateToString: { format: '%Y-%m-%d', date: '$date' },
-            },
-          },
-          total: { $sum: '$amount' },
-        },
-      },
-      { $sort: { '_id.day': 1 } },
-    ]);
+    const data = await getSpendingTimelineData(userId, range);
 
     res.json({
       range,
-      timeline: data.map(d => ({
-        date: d._id.day,
-        total: d.total,
-      })),
+      timeline: data,
     });
   } catch (err) {
     console.log(err);

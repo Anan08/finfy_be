@@ -3,6 +3,12 @@ const { getAIResponse } = require('../services/aiServices');
 const { getFinancialProfileData } = require('../lib/getFinancialProfile');
 const Profile = require('../models/Profile');
 
+const {
+    getSpendingDistributionData,
+    getSpendingTimelineData,
+    getTotalIncomeOutcome
+} = require('../services/analyticsServices');
+
 exports.getChatHistory = async (req, res) => {
     try {
         const userId = req.user.id;
@@ -40,9 +46,9 @@ exports.sendMessage = async (req, res) => {
         const { message } = req.body;
         const userId = req.user.id
         // SAVE USER MESSAGE
-        if (!message) return res.status(400).json({message : "Message is Required"})
+        if (!message) return res.status(400).json({ message: "Message is Required" })
         const userMessage = await ChatMessage.create({
-            userId : userId,
+            userId: userId,
             sender: 'user',
             message,
         });
@@ -63,11 +69,30 @@ exports.sendMessage = async (req, res) => {
         // GET FINANCIAL PROFILE DATA
         const financialProfile = await getFinancialProfileData(userId);
 
+        // Detect if user wants financial summary
+        let extraData = {};
+        if (message.toLowerCase().includes('rekap') || message.toLowerCase().includes('summary')) {
+            const distribution = await getSpendingDistributionData(userId);
+            const timeline = await getSpendingTimelineData(userId, '30d');
+            const totals = await getTotalIncomeOutcome(userId);
+            extraData = {
+                distribution,
+                timeline,
+                total_income: totals.Income,
+                total_outcome: totals.Outcome
+            };
+        }
+
         const ai = await getAIResponse({
             message,
             conversation: chatConversation,
             financialProfile,
-            context: {name: userProfile?.fullName || "User", age: userProfile?.age || "N/A", occupation: userProfile?.job || "N/A"}
+            context: {
+                name: userProfile?.fullName || "User",
+                age: userProfile?.age || "N/A",
+                occupation: userProfile?.job || "N/A",
+                extraData
+            }
         });
 
         const aiMessage = await ChatMessage.create({
@@ -79,7 +104,7 @@ exports.sendMessage = async (req, res) => {
 
         res.json({
             success: true,
-            message : [userMessage, aiMessage]
+            message: [userMessage, aiMessage]
         });
 
     } catch (err) {
