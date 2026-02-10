@@ -5,9 +5,11 @@ const cookieParser = require('cookie-parser');
 require('dotenv').config();
 const cors = require('cors');
 const apiRoutes = require('./src/routes');
+const dns = require('dns');
+dns.setServers(['8.8.8.8', '8.8.4.4']);
 
 app.use(cors({
-    origin : "*"
+    origin: "*"
 }))
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -19,7 +21,7 @@ async function startServer() {
         await mongoose.connect(process.env.MONGODB_URL)
         console.log('Connected to MongoDB');
 
-        app.listen(process.env.PORT,'0.0.0.0', () => {
+        app.listen(process.env.PORT, '0.0.0.0', () => {
             console.log(`Server is running`);
         });
     } catch (error) {
