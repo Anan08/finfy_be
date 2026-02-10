@@ -13,10 +13,10 @@ exports.autoCategorize = async (req, res) => {
 
         const categoryList = await Category.find({}).lean();
 
-        // list mapping: name + id
         const formattedCategories = categoryList.map(cat => ({
             id: cat._id.toString(),
-            name: cat.name
+            name: cat.name,
+            description: cat.description
         }));
 
         const prompt = `
