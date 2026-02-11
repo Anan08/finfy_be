@@ -12,6 +12,7 @@ exports.getAIResponse = async ({ conversation, financialProfile, context, messag
     - also the financial profile and context is provided for your reference only, do not mention them unless asked.
     - profile given doesnt have specific timeframe unless asked.
     - dont make up data that isnt in the profile.
+    - all the data given isnt for specific timeframe unless user explicitly ask for it so no need to mention the timeframe such as "monthly", "yearly", etc.
     - if user asks for "rekap keuangan" (financial summary), you MUST:
       1. Respond with a friendly confirmation like "yap, ini hasil rekap keuangan kamu, bisa didownload langsung".
       2. Include a JSON block wrapped in \`\`\`json ... \`\`\` with this structure:
