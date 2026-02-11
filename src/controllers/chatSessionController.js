@@ -2,6 +2,7 @@ const ChatMessage = require('../models/ChatMessage');
 const { getAIResponse } = require('../services/aiServices');
 const { getFinancialProfileData } = require('../lib/getFinancialProfile');
 const Profile = require('../models/Profile');
+const Goal = require('../models/Goal');
 
 const {
     getSpendingDistributionData,
@@ -75,11 +76,14 @@ exports.sendMessage = async (req, res) => {
             const distribution = await getSpendingDistributionData(userId);
             const timeline = await getSpendingTimelineData(userId, '30d');
             const totals = await getTotalIncomeOutcome(userId);
+            const goals = await Goal.find({ userId });
+            const totalGoalExpense = goals.reduce((acc, g) => acc + (g.currentAmount || 0), 0);
             extraData = {
                 distribution,
                 timeline,
                 total_income: totals.Income,
-                total_outcome: totals.Outcome
+                total_outcome: totals.Outcome,
+                total_goal_expense: totalGoalExpense
             };
         }
 

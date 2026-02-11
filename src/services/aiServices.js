@@ -21,9 +21,9 @@ exports.getAIResponse = async ({ conversation, financialProfile, context, messag
         "data": {
           "total_income": number,
           "total_outcome": number,
+          "total_goal_expense": number,
           "distribution": [ { "category": string, "totalAmount": number, "percentage": number } ],
           "timeline": [ { "date": string, "total": number } ],
-          "insights": string[]
         }
       }
     - for regular chat or advice, DO NOT produce JSON.

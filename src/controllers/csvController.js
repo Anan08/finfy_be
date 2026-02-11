@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const Transaction = require('../models/Transaction');
+const Goal = require('../models/Goal');
 const multer = require('multer');
 const fs = require('fs');
 const csv = require('fast-csv');
@@ -205,6 +206,69 @@ exports.exportCSV = async (req, res) => {
 
             // Spacer row
             sheet.addRow([]);
+        }
+
+        // ----- Add Goals Section -----
+        const goals = await Goal.find({ userId: req.user.id });
+        if (goals.length > 0) {
+            sheet.addRow([]); // spacer before goals
+            const goalTitleRow = sheet.addRow(['Finfy Goals']);
+            goalTitleRow.getCell(1).font = titleStyle.font;
+            sheet.mergeCells(goalTitleRow.number, 1, goalTitleRow.number, 4);
+            sheet.addRow([]); // spacer
+
+            const goalHeaderRow = sheet.addRow(['Goal Title', 'Target Amount', 'Current Amount (Expense)', 'Balance Left']);
+            goalHeaderRow.height = 24;
+            for (let c = 1; c <= 4; c++) {
+                const cell = goalHeaderRow.getCell(c);
+                cell.font = columnHeaderFont;
+                cell.fill = columnHeaderFill;
+                cell.alignment = { vertical: 'middle', horizontal: 'center' };
+                cell.border = thinBorder;
+            }
+
+            let totalGoalExpense = 0;
+            goals.forEach((g, idx) => {
+                const balanceLeft = Math.max(0, g.targetAmount - g.currentAmount);
+                const row = sheet.addRow([
+                    g.title,
+                    g.targetAmount,
+                    g.currentAmount,
+                    balanceLeft
+                ]);
+                totalGoalExpense += g.currentAmount;
+
+                const rowFill = idx % 2 === 0
+                    ? { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFFFFF' } }
+                    : { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF8F9FA' } };
+
+                for (let c = 1; c <= 4; c++) {
+                    const cell = row.getCell(c);
+                    cell.fill = rowFill;
+                    cell.border = thinBorder;
+                    cell.alignment = { vertical: 'middle' };
+                }
+
+                row.getCell(2).numFmt = currencyFormat;
+                row.getCell(3).numFmt = currencyFormat;
+                row.getCell(4).numFmt = currencyFormat;
+                row.getCell(2).alignment = { vertical: 'middle', horizontal: 'right' };
+                row.getCell(3).alignment = { vertical: 'middle', horizontal: 'right' };
+                row.getCell(4).alignment = { vertical: 'middle', horizontal: 'right' };
+            });
+
+            // Total Goal Expense row
+            const totalGoalRow = sheet.addRow(['', 'Total Goal Expense', totalGoalExpense, '']);
+            totalGoalRow.height = 26;
+            for (let c = 1; c <= 4; c++) {
+                const cell = totalGoalRow.getCell(c);
+                cell.fill = subtotalFill;
+                cell.border = thinBorder;
+                cell.font = { bold: true, size: 11 };
+                cell.alignment = { vertical: 'middle' };
+            }
+            totalGoalRow.getCell(3).numFmt = currencyFormat;
+            totalGoalRow.getCell(3).alignment = { vertical: 'middle', horizontal: 'right' };
         }
 
         // Set column widths

@@ -68,7 +68,7 @@ exports.buildFinancialProfile = async ({
   const outcome = sumBy("Outcome");
 
   // Category-based breakdowns
-  const savings = sumBy("Outcome", ["Saving"]) - sumBy("Income", ["Saving"]);
+  const savings = sumBy("Outcome", ["Saving"]);
   const investments = sumBy("Outcome", ["Investment"]);
   const debt = sumBy("Outcome", ["Debt"]);
 
