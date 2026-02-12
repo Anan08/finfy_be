@@ -68,9 +68,10 @@ exports.buildFinancialProfile = async ({
   const outcome = sumBy("Outcome");
 
   // Category-based breakdowns
-  const savings = sumBy("Outcome", ["Saving"]);
-  const investments = sumBy("Outcome", ["Investment"]);
-  const debt = sumBy("Outcome", ["Debt"]);
+  let savings = sumBy("Outcome", ["Saving"]) + sumBy("Income", ["Saving"]) <= 0 ? 0 : sumBy("Outcome", ["Saving"]) + sumBy("Income", ["Saving"]);
+  let investments = sumBy("Outcome", ["Investment"]) - sumBy("Income", ["Investment"]) <= 0 ? 0 : sumBy("Outcome", ["Investment"]) - sumBy("Income", ["Investment"]);
+  let debt = sumBy("Income", ["Debt"]) - sumBy("Outcome", ["Debt"]) <= 0 ? 0 : sumBy("Income", ["Debt"]) - sumBy("Outcome", ["Debt"]);
+
 
   const livingCost = sumBy("Outcome", LIVING_COST_CATEGORIES);
   const lifestyleCost = sumBy("Outcome", LIFESTYLE_CATEGORIES);
@@ -78,7 +79,7 @@ exports.buildFinancialProfile = async ({
   // Goals
   const goals = await Goal.find({ userId });
   const totalGoalOutcome = goals.reduce(
-    (acc, g) => acc + g.currentAmount,
+    (acc, g) => acc + (g.currentAmount || 0),
     0
   );
 
